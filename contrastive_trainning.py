@@ -1,58 +1,73 @@
+# =========== GLOBAL CONFIGURATION ===========
 import os
+import ssl
+import zipfile
+import urllib.request
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-
 from torchvision import transforms, datasets, models
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, random_split
+from torchvision.models import resnet18
 from PIL import Image
 import numpy as np
-import time
+import random
 
+# Prevent nondeterminism
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 torch.backends.cudnn.enabled = False
 
+CONFIG = {
+    "LOCAL_OR_COLAB": "COLAB",
+    "DATA_DIR_LOCAL": "/home/juliana/internship_LINUX/datasets/EuroSAT_RGB",
+    "DATA_DIR_COLAB": "/content/EuroSAT_RGB",
+    "ZIP_PATH": "/content/EuroSAT.zip",
+    "EUROSAT_URL": "https://madm.dfki.de/files/sentinel/EuroSAT.zip",
+    "SEED": 42,  # Default seed (will be overridden per run)
+    "BATCH_SIZE": 128,
+    "LR": 0.001,
+    "EPOCHS_SIMCLR": 2,
+    "EPOCHS_LINEAR": 2,
+    "PROJ_DIM": 128,
+    "FEATURE_DIM": 512,
+}
 
-# ===========
-#  Utilities
-# ===========
+# =========== SETUP ===========
+def set_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
 
-# TwoCropsTransform creates two differently augmented versions of each image.
-class TwoCropsTransform:
-    def __init__(self, base_transform):
-        self.base_transform = base_transform
+def prepare_data():
+    if CONFIG["LOCAL_OR_COLAB"] == "LOCAL":
+        return CONFIG["DATA_DIR_LOCAL"]
 
-    def __call__(self, x):
-        return [self.base_transform(x), self.base_transform(x)]
+    if not os.path.exists(CONFIG["DATA_DIR_COLAB"]):
+        print("Downloading EuroSAT RGB...")
+        ssl._create_default_https_context = ssl._create_unverified_context
+        urllib.request.urlretrieve(CONFIG["EUROSAT_URL"], CONFIG["ZIP_PATH"])
+        with zipfile.ZipFile(CONFIG["ZIP_PATH"], 'r') as zip_ref:
+            zip_ref.extractall("/content")
+        os.rename("/content/2750", CONFIG["DATA_DIR_COLAB"])
+        print("EuroSAT RGB dataset downloaded and extracted.")
+    return CONFIG["DATA_DIR_COLAB"]
 
-
-# ===========
-#  Data Preparation
-# ===========
-
-# Set paths for your EuroSat dataset.
-# This should be the root folder containing subfolders for each class
-data_dir = "/home/juliana/internship_LINUX/datasets/EuroSAT_RGB"
-
-# Standard normalization parameters for ImageNet (can be adapted if needed)
+# =========== TRANSFORMS ===========
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
-# Augmentations for SimCLR training (contrastive)
 simclr_transform = transforms.Compose([
-    transforms.RandomResizedCrop(size=64, scale=(0.5, 1.0)),   # EuroSat images are 64x64
-    transforms.RandomHorizontalFlip(p=0.5),
-    transforms.RandomApply([
-        transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)  # brightness, contrast, saturation, hue
-    ], p=0.8),
+    transforms.RandomResizedCrop(64, scale=(0.5, 1.0)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
     transforms.RandomGrayscale(p=0.2),
-    # transforms.GaussianBlur(kernel_size=3),  # a small gaussian blur
     transforms.ToTensor(),
     normalize,
 ])
 
-# For evaluation / linear probing, use a deterministic transform:
 eval_transform = transforms.Compose([
     transforms.Resize(72),
     transforms.CenterCrop(64),
@@ -60,238 +75,164 @@ eval_transform = transforms.Compose([
     normalize,
 ])
 
-# Create a dataset for contrastive training using TwoCropsTransform.
-contrastive_dataset = datasets.ImageFolder(
-    root=data_dir,
-    transform=TwoCropsTransform(simclr_transform)
-)
+class TwoCropsTransform:
+    def __init__(self, base_transform):
+        self.base_transform = base_transform
 
-contrastive_loader = DataLoader(
-    contrastive_dataset,
-    batch_size=128,  # adjust depending on your hardware
-    shuffle=True,
-    # num_workers=4,
-    drop_last=True
-)
+    def __call__(self, x):
+        return [self.base_transform(x), self.base_transform(x)]
 
-# Create datasets for linear probing. Here, we use the standard ImageFolder with evaluation transforms.
-# We'll split the dataset (you can use your own train/val split as needed).
-all_dataset = datasets.ImageFolder(
-    root=data_dir,
-    transform=eval_transform
-)
-
-# For simplicity, we split manually here (80% train, 20% val)
-train_size = int(0.2 * len(all_dataset))
-val_size = len(all_dataset) - train_size
-train_dataset, val_dataset = torch.utils.data.random_split(all_dataset, [train_size, val_size])
-
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=4)
-
-
-# ===========
-#  Model: Backbone + Projection Head for SimCLR
-# ===========
-
+# =========== MODEL COMPONENTS ===========
 class ProjectionHead(nn.Module):
-    """
-    A small MLP with one hidden layer (and batch normalization) to map
-    the backbone representations to the space where contrastive loss is computed.
-    """
     def __init__(self, input_dim, proj_dim=128, hidden_dim=2048):
-        super(ProjectionHead, self).__init__()
+        super().__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(inplace=True),
+            nn.ReLU(),
             nn.Linear(hidden_dim, proj_dim)
         )
-    
+
     def forward(self, x):
         return self.net(x)
 
-    
 class SimCLRModel(nn.Module):
     def __init__(self, base_encoder, proj_dim=128):
-        super(SimCLRModel, self).__init__()
-        # Use a pretrained model if available (or train from scratch)
+        super().__init__()
         self.encoder = base_encoder
-        # Get the dimension of the last layer's features
-        # For ResNet18, the penultimate layer typically has 512 features.
-        if hasattr(self.encoder, 'fc'):
-            feat_dim = self.encoder.fc.in_features
-            # remove the original fc layer
-            self.encoder.fc = nn.Identity()
-        else:
-            raise ValueError("Base encoder does not have an attribute 'fc'")
-        
-        self.projection_head = ProjectionHead(input_dim=feat_dim, proj_dim=proj_dim)
+        self.encoder.fc = nn.Identity()
+        self.projection_head = ProjectionHead(input_dim=CONFIG["FEATURE_DIM"], proj_dim=proj_dim)
 
     def forward(self, x):
         feat = self.encoder(x)
         proj = self.projection_head(feat)
-        return feat, proj  # return both for later use in linear probing
-
-
-# ===========
-#  NT-Xent Loss (Normalized Temperature-scaled Cross Entropy Loss)
-# ===========
+        return feat, proj
 
 class NTXentLoss(nn.Module):
     def __init__(self, batch_size, temperature=0.5, device='cuda'):
-        super(NTXentLoss, self).__init__()
-        self.batch_size = batch_size
+        super().__init__()
         self.temperature = temperature
+        self.batch_size = batch_size
         self.device = device
         self.criterion = nn.CrossEntropyLoss()
 
     def forward(self, zis, zjs):
         N = zis.size(0)
-        z = torch.cat([zis, zjs], dim=0)  # shape [2N, D]
-        z = F.normalize(z, dim=1)
-
-        sim_matrix = torch.matmul(z, z.T) / self.temperature
-        # Remove self-similarity
+        z = F.normalize(torch.cat([zis, zjs], dim=0), dim=1)
+        sim = torch.matmul(z, z.T) / self.temperature
         mask = torch.eye(2 * N, dtype=torch.bool).to(self.device)
-        sim_matrix = sim_matrix.masked_fill(mask, -1e9)
+        sim = sim.masked_fill(mask, -1e9)
+        labels = torch.cat([torch.arange(N, 2 * N), torch.arange(0, N)]).to(self.device)
+        return self.criterion(sim, labels)
 
-        # Positive pairs are (i, i + N) and (i + N, i)
-        positives = torch.cat([torch.arange(N, 2 * N), torch.arange(0, N)]).to(self.device)
-        labels = positives
-
-        logits = sim_matrix
-        return self.criterion(logits, labels)
-
-# ===========
-#  Training Functions
-# ===========
-
-def train_simclr(model, dataloader, optimizer, criterion, device, epochs=100):
+# =========== TRAINING ===========
+def train_simclr(model, loader, optimizer, criterion, device, epochs):
     model.train()
     model.to(device)
     for epoch in range(epochs):
-        print(f"Epoch {epoch+1}/{epochs}")
-        epoch_loss = 0.0
-        start_time = time.time()
-        for (images, _) in dataloader:
-            print("Batch size:", images[0].size())
-            # images is a list of two augmented images
-            images1 = images[0].to(device)
-            images2 = images[1].to(device)
+        total_loss = 0
+        for (x1, x2), _ in loader:
+            x1, x2 = x1.to(device), x2.to(device)
+            _, z1 = model(x1)
+            _, z2 = model(x2)
+            loss = criterion(z1, z2)
             optimizer.zero_grad()
-
-            # Forward pass for both views:
-            _, proj1 = model(images1)
-            _, proj2 = model(images2)
-            print("Projection shape:", proj1.size(), proj2.size())
-
-            loss = criterion(proj1, proj2)
             loss.backward()
             optimizer.step()
-            epoch_loss += loss.item()
+            total_loss += loss.item()
+        avg = total_loss / len(loader)
+        print(f"[SimCLR] Epoch {epoch+1}/{epochs} - Loss: {avg:.4f}")
+    print("Finished SimCLR pretraining.")
 
-        avg_loss = epoch_loss / len(dataloader)
-        elapsed = time.time() - start_time
-        print(f"Epoch [{epoch+1}/{epochs}], Loss: {avg_loss:.4f}, Time: {elapsed:.2f}s")
-    print("SimCLR training complete.")
-
-
-def train_linear_probe(backbone, train_loader, val_loader, device, epochs=20, lr=0.001):
-    # Freeze backbone weights
-    backbone.eval()
+def train_linear_probe(backbone, train_loader, val_loader, device, epochs, lr, run_id):
+    # Freeze backbone parameters
     for p in backbone.parameters():
         p.requires_grad = False
-
-    # Create a simple linear classifier that takes features from the backbone and maps to class logits.
-    # Assuming EuroSat has 10 classes (adjust num_classes accordingly).
-    num_classes = len(train_loader.dataset.dataset.classes) if hasattr(train_loader.dataset, 'dataset') else len(train_loader.dataset.classes)
-    
-    # Get feature dimension from the backbone (assuming resnet18: 512)
-    feature_dim = 512
-    classifier = nn.Linear(feature_dim, num_classes).to(device)
+    # Create a classifier on top of the frozen features
+    classifier = nn.Linear(CONFIG["FEATURE_DIM"], len(train_loader.dataset.dataset.classes)).to(device)
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
     criterion = nn.CrossEntropyLoss()
 
     for epoch in range(epochs):
         classifier.train()
-        running_loss = 0.0
-        total = 0
-        correct = 0
+        correct, total = 0, 0
         for images, labels in train_loader:
-
-            images = images.to(device)
-            labels = labels.to(device)
-            optimizer.zero_grad()
-            # Extract features from the frozen backbone
+            images, labels = images.to(device), labels.to(device)
             features = backbone(images)
-            # Ensure features are flattened (for ResNet, they are already [batch, feature_dim])
-            logits = classifier(features)
-            loss = criterion(logits, labels)
+            outputs = classifier(features)
+            loss = criterion(outputs, labels)
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
-            running_loss += loss.item() * images.size(0)
             total += labels.size(0)
-            _, predicted = torch.max(logits.data, 1)
-            correct += (predicted == labels).sum().item()
+            correct += (outputs.argmax(1) == labels).sum().item()
 
-        epoch_loss = running_loss / total
-        train_acc = correct / total
+        train_acc = correct / total * 100
+        val_acc = evaluate(classifier, backbone, val_loader, device)
+        print(f"[Linear] Epoch {epoch+1}/{epochs} - Train Acc: {train_acc:.2f}%, Val Acc: {val_acc:.2f}%")
 
-        # Evaluation
-        classifier.eval()
-        val_loss = 0.0
-        correct_val = 0
-        total_val = 0
-        with torch.no_grad():
-            for images, labels in val_loader:
-                images = images.to(device)
-                labels = labels.to(device)
-                features = backbone(images)
-                logits = classifier(features)
-                loss = criterion(logits, labels)
-                val_loss += loss.item() * images.size(0)
-                total_val += labels.size(0)
-                _, predicted = torch.max(logits.data, 1)
-                correct_val += (predicted == labels).sum().item()
-        val_loss /= total_val
-        val_acc = correct_val / total_val
+    # Save the classifier weights uniquely for each run
+    torch.save(classifier.state_dict(), f"linear_probe_seed{run_id}.pth")
+    # Return the final validation accuracy
+    return val_acc
 
-        print(f"Epoch [{epoch+1}/{epochs}] Train Loss: {epoch_loss:.4f}, Train Acc: {train_acc:.4f} | Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
-    print("Linear probing training complete.")
+def evaluate(classifier, backbone, loader, device):
+    classifier.eval()
+    correct, total = 0, 0
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+            features = backbone(images)
+            outputs = classifier(features)
+            total += labels.size(0)
+            correct += (outputs.argmax(1) == labels).sum().item()
+    return correct / total * 100
 
-
-# ===========
-#  Main Training Execution
-# ===========
-
-def main():
-    # Set device
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    print(f"Using device: {device}")
-
-    # Prepare the base encoder (ResNet18) for SimCLR.
-    base_encoder = models.resnet18(pretrained=False)
-    simclr_model = SimCLRModel(base_encoder=base_encoder, proj_dim=128)
-
-    # Optimizer and criterion for SimCLR stage
-    optimizer = optim.Adam(simclr_model.parameters(), lr=0.001)
-    batch_size = 128  # make sure this matches your DataLoader batch_size
-    contrastive_criterion = NTXentLoss(batch_size=batch_size, temperature=0.5, device=device)
-
-    # 1. Pretrain with SimCLR (contrastive learning)
-    print("Starting SimCLR pretraining...")
-    train_simclr(simclr_model, contrastive_loader, optimizer, contrastive_criterion, device, epochs=1)
-
-    # Save or extract the backbone encoder. We “freeze” the projection head.
-    backbone = simclr_model.encoder  # This is our feature extractor
-
-    # 2. Linear Probing: train a linear classifier on frozen features.
-    print("Starting linear probe training...")
-    train_linear_probe(backbone, train_loader, val_loader, device, epochs=5, lr=0.001)
-
+# =========== RUN EVERYTHING ===========
 if __name__ == "__main__":
-    main()
+    # Define the list of seeds for each run
+    seeds = [42, 43, 44]
+    results = []  # Will store the final linear probe validation accuracies
 
+    for seed in seeds:
+        print(f"\n=== Starting run with seed {seed} ===")
+        set_seed(seed)
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        data_dir = prepare_data()
 
+        # Prepare datasets and dataloaders for contrastive and evaluation
+        contrastive_dataset = datasets.ImageFolder(data_dir, transform=TwoCropsTransform(simclr_transform))
+        contrastive_loader = DataLoader(contrastive_dataset, batch_size=CONFIG["BATCH_SIZE"], shuffle=True, drop_last=True)
+
+        full_dataset = datasets.ImageFolder(data_dir, transform=eval_transform)
+        train_len = int(0.8 * len(full_dataset))
+        val_len = len(full_dataset) - train_len
+        train_set, val_set = random_split(full_dataset, [train_len, val_len])
+        train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
+        val_loader = DataLoader(val_set, batch_size=32)
+
+        # Initialize base encoder and SimCLR model
+        pretrained = True
+        base_encoder = resnet18(weights=None if not pretrained else "DEFAULT")
+        simclr_model = SimCLRModel(base_encoder, proj_dim=CONFIG["PROJ_DIM"])
+        optimizer = optim.Adam(simclr_model.parameters(), lr=CONFIG["LR"])
+        loss_fn = NTXentLoss(CONFIG["BATCH_SIZE"], temperature=0.5, device=device)
+
+        print("Starting SimCLR training...")
+        train_simclr(simclr_model, contrastive_loader, optimizer, loss_fn, device, CONFIG["EPOCHS_SIMCLR"])
+
+        print("Saving encoder...")
+        torch.save(simclr_model.state_dict(), f"simclr_model_seed{seed}.pth")
+
+        print("Starting linear probe training...")
+        final_val_acc = train_linear_probe(simclr_model.encoder, train_loader, val_loader, device, CONFIG["EPOCHS_LINEAR"], CONFIG["LR"], seed)
+        results.append(final_val_acc)
+        print(f"Run with seed {seed} finished with final Val Acc: {final_val_acc:.2f}%")
+
+    # Compute and print overall mean and standard deviation of the final validation accuracies
+    mean_acc = np.mean(results)
+    std_acc = np.std(results)
+    print("\n=== Summary over runs ===")
+    print(f"Final Linear Probe Validation Accuracies: {results}")
+    print(f"Mean Accuracy: {mean_acc:.2f}%")
+    print(f"Standard Deviation Accuracy: {std_acc:.2f}%")
