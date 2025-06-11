@@ -1,5 +1,5 @@
 eurosat_metadata.csv
 eurosat_metadata.txt
-exploratory_notebooks/wandb/
+exploratory_notebooks/wandb/*
 exploratory_notebooks/models/*
 exploratory_notebooks/best_model.pt
