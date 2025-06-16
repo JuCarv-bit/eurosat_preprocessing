@@ -33,7 +33,19 @@ def print_versions():
 
     def check_torchvision_version():
         return torchvision.__version__ if torchvision else None
-
+    
+    def check_conda_version():
+        import subprocess
+        try:
+            result = subprocess.run(['conda', '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if result.returncode == 0:
+                return result.stdout.strip().split()[-1]
+            else:
+                return None
+        except Exception:
+            return None
+        
+    print(f"Conda version: {check_conda_version() or 'Not installed'}")
     print(f"Python version: {check_python_version()}")
     print(f"PyTorch version: {check_torch_version() or 'Not installed'}")
     print(f"CUDA available: {check_cuda_available()}")
@@ -51,10 +63,10 @@ def configure_gpu_device(TARGET_GPU_INDEX):
         else:
             print(f"Error: Physical GPU {TARGET_GPU_INDEX} is not available. There are only {torch.cuda.device_count()} GPUs (0 to {torch.cuda.device_count() - 1}).")
             print("Falling back to CPU.")
-            DEVICE = torch.device("CPU")
+            DEVICE = torch.device("cpu")
     else:
         print("CUDA is not available. Falling back to CPU.")
-        DEVICE = torch.device("CPU")
+        DEVICE = torch.device("cpu")
 
     print(f"Final DEVICE variable is set to: {DEVICE}")
     if DEVICE.type == 'cuda':
