@@ -3,3 +3,4 @@ eurosat_metadata.txt
 exploratory_notebooks/wandb/
 exploratory_notebooks/models/*
 exploratory_notebooks/best_model.pt
+exploratory_notebooks/utils/__pycache__/
