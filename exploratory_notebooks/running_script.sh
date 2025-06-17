@@ -1,5 +1,5 @@
 #!/bin/bash
-jupyter nbconvert --to script eurosat_contrastive_stratified.ipynb
-tmux new -d -s jobeurosatcontrastive-aug-reploss-2
-tmux attach -t jobeurosatcontrastive-aug-reploss-2
-conda activate myenv && python eurosat_contrastive_stratified.py > runs/jobeurosatcontrastive-aug-reploss-2.log 2>&1
+# jupyter nbconvert --to script eurosat_contrastive_stratified.ipynb
+jupyter nbconvert --to script eurosat_contrastive.ipynb --output eurosat_contrastive-bs256
+tmux new-session -As jobeurosatcontrastive-aug-reploss-2-bs256
+conda activate myenv && python eurosat_contrastive-bs256.py > runs/jobeurosat_contrastive-bs256.log 2>&1
