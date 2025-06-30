@@ -1,0 +1,206 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 2
+Torchvision version: 0.20.1
+Successfully set to use GPU: 1 (NVIDIA RTX A6000)
+Final DEVICE variable is set to: cuda:1
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 1
+Dummy tensor is on device: cuda:1
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.20.1
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250624_183900-lif98c43
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS100
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/lif98c43
+Computed mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 84/11/11 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate   use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+Epoch 01/100 | Train Loss: 5.6233, Val Loss: 5.0221 | Probe Acc (Train): 0.398, Probe Acc (Val): 0.388 | Contrastive Acc (Train): 0.045, Contrastive Acc (Val): 0.046 | KNN Acc (Val): 0.533
+Epoch 02/100 | Train Loss: 4.4145, Val Loss: 4.1531 | Probe Acc (Train): 0.501, Probe Acc (Val): 0.465 | Contrastive Acc (Train): 0.157, Contrastive Acc (Val): 0.163 | KNN Acc (Val): 0.584
+Epoch 03/100 | Train Loss: 3.9254, Val Loss: 3.7056 | Probe Acc (Train): 0.542, Probe Acc (Val): 0.548 | Contrastive Acc (Train): 0.287, Contrastive Acc (Val): 0.305 | KNN Acc (Val): 0.568
+Epoch 04/100 | Train Loss: 3.5656, Val Loss: 3.4121 | Probe Acc (Train): 0.551, Probe Acc (Val): 0.560 | Contrastive Acc (Train): 0.396, Contrastive Acc (Val): 0.405 | KNN Acc (Val): 0.569
+Epoch 05/100 | Train Loss: 3.3199, Val Loss: 3.2753 | Probe Acc (Train): 0.561, Probe Acc (Val): 0.557 | Contrastive Acc (Train): 0.483, Contrastive Acc (Val): 0.493 | KNN Acc (Val): 0.596
+Epoch 06/100 | Train Loss: 3.1809, Val Loss: 3.1238 | Probe Acc (Train): 0.583, Probe Acc (Val): 0.575 | Contrastive Acc (Train): 0.544, Contrastive Acc (Val): 0.548 | KNN Acc (Val): 0.581
+Epoch 07/100 | Train Loss: 3.0435, Val Loss: 3.0774 | Probe Acc (Train): 0.599, Probe Acc (Val): 0.591 | Contrastive Acc (Train): 0.583, Contrastive Acc (Val): 0.590 | KNN Acc (Val): 0.607
+Epoch 08/100 | Train Loss: 2.9581, Val Loss: 2.9336 | Probe Acc (Train): 0.587, Probe Acc (Val): 0.576 | Contrastive Acc (Train): 0.640, Contrastive Acc (Val): 0.635 | KNN Acc (Val): 0.619
+Epoch 09/100 | Train Loss: 2.8850, Val Loss: 2.9569 | Probe Acc (Train): 0.601, Probe Acc (Val): 0.591 | Contrastive Acc (Train): 0.643, Contrastive Acc (Val): 0.642 | KNN Acc (Val): 0.626
+Epoch 10/100 | Train Loss: 2.8349, Val Loss: 2.8468 | Probe Acc (Train): 0.598, Probe Acc (Val): 0.583 | Contrastive Acc (Train): 0.695, Contrastive Acc (Val): 0.696 | KNN Acc (Val): 0.632
+Epoch 11/100 | Train Loss: 2.7888, Val Loss: 2.8470 | Probe Acc (Train): 0.601, Probe Acc (Val): 0.583 | Contrastive Acc (Train): 0.712, Contrastive Acc (Val): 0.712 | KNN Acc (Val): 0.636
+Epoch 12/100 | Train Loss: 2.7246, Val Loss: 2.7509 | Probe Acc (Train): 0.606, Probe Acc (Val): 0.593 | Contrastive Acc (Train): 0.739, Contrastive Acc (Val): 0.727 | KNN Acc (Val): 0.639
+Epoch 13/100 | Train Loss: 2.6621, Val Loss: 2.7067 | Probe Acc (Train): 0.620, Probe Acc (Val): 0.606 | Contrastive Acc (Train): 0.763, Contrastive Acc (Val): 0.778 | KNN Acc (Val): 0.657
+Epoch 14/100 | Train Loss: 2.6383, Val Loss: 2.6596 | Probe Acc (Train): 0.625, Probe Acc (Val): 0.621 | Contrastive Acc (Train): 0.778, Contrastive Acc (Val): 0.774 | KNN Acc (Val): 0.656
+Epoch 15/100 | Train Loss: 2.6053, Val Loss: 2.6263 | Probe Acc (Train): 0.638, Probe Acc (Val): 0.617 | Contrastive Acc (Train): 0.792, Contrastive Acc (Val): 0.786 | KNN Acc (Val): 0.658
+Epoch 16/100 | Train Loss: 2.5734, Val Loss: 2.6113 | Probe Acc (Train): 0.632, Probe Acc (Val): 0.621 | Contrastive Acc (Train): 0.801, Contrastive Acc (Val): 0.796 | KNN Acc (Val): 0.663
+Epoch 17/100 | Train Loss: 2.5616, Val Loss: 2.5874 | Probe Acc (Train): 0.629, Probe Acc (Val): 0.621 | Contrastive Acc (Train): 0.811, Contrastive Acc (Val): 0.797 | KNN Acc (Val): 0.666
+Epoch 18/100 | Train Loss: 2.5348, Val Loss: 2.5863 | Probe Acc (Train): 0.636, Probe Acc (Val): 0.628 | Contrastive Acc (Train): 0.816, Contrastive Acc (Val): 0.812 | KNN Acc (Val): 0.669
+Epoch 19/100 | Train Loss: 2.5178, Val Loss: 2.5772 | Probe Acc (Train): 0.644, Probe Acc (Val): 0.616 | Contrastive Acc (Train): 0.824, Contrastive Acc (Val): 0.825 | KNN Acc (Val): 0.683
+Epoch 20/100 | Train Loss: 2.4917, Val Loss: 2.5846 | Probe Acc (Train): 0.653, Probe Acc (Val): 0.642 | Contrastive Acc (Train): 0.826, Contrastive Acc (Val): 0.820 | KNN Acc (Val): 0.696
+Epoch 21/100 | Train Loss: 2.4766, Val Loss: 2.5241 | Probe Acc (Train): 0.646, Probe Acc (Val): 0.649 | Contrastive Acc (Train): 0.845, Contrastive Acc (Val): 0.841 | KNN Acc (Val): 0.688
+Epoch 22/100 | Train Loss: 2.4555, Val Loss: 2.5396 | Probe Acc (Train): 0.658, Probe Acc (Val): 0.648 | Contrastive Acc (Train): 0.831, Contrastive Acc (Val): 0.838 | KNN Acc (Val): 0.691
+Epoch 23/100 | Train Loss: 2.4481, Val Loss: 2.4889 | Probe Acc (Train): 0.646, Probe Acc (Val): 0.640 | Contrastive Acc (Train): 0.864, Contrastive Acc (Val): 0.865 | KNN Acc (Val): 0.696
+Epoch 24/100 | Train Loss: 2.4192, Val Loss: 2.4813 | Probe Acc (Train): 0.665, Probe Acc (Val): 0.658 | Contrastive Acc (Train): 0.857, Contrastive Acc (Val): 0.854 | KNN Acc (Val): 0.697
+Epoch 25/100 | Train Loss: 2.4173, Val Loss: 2.4618 | Probe Acc (Train): 0.659, Probe Acc (Val): 0.646 | Contrastive Acc (Train): 0.868, Contrastive Acc (Val): 0.860 | KNN Acc (Val): 0.697
+Epoch 26/100 | Train Loss: 2.4055, Val Loss: 2.4639 | Probe Acc (Train): 0.659, Probe Acc (Val): 0.648 | Contrastive Acc (Train): 0.869, Contrastive Acc (Val): 0.855 | KNN Acc (Val): 0.702
+Epoch 27/100 | Train Loss: 2.3919, Val Loss: 2.5127 | Probe Acc (Train): 0.656, Probe Acc (Val): 0.640 | Contrastive Acc (Train): 0.853, Contrastive Acc (Val): 0.855 | KNN Acc (Val): 0.707
+Epoch 28/100 | Train Loss: 2.3854, Val Loss: 2.4300 | Probe Acc (Train): 0.663, Probe Acc (Val): 0.647 | Contrastive Acc (Train): 0.876, Contrastive Acc (Val): 0.876 | KNN Acc (Val): 0.714
+Epoch 29/100 | Train Loss: 2.3607, Val Loss: 2.4734 | Probe Acc (Train): 0.671, Probe Acc (Val): 0.671 | Contrastive Acc (Train): 0.871, Contrastive Acc (Val): 0.866 | KNN Acc (Val): 0.726
+Epoch 30/100 | Train Loss: 2.3605, Val Loss: 2.4378 | Probe Acc (Train): 0.661, Probe Acc (Val): 0.656 | Contrastive Acc (Train): 0.874, Contrastive Acc (Val): 0.873 | KNN Acc (Val): 0.723
+Epoch 31/100 | Train Loss: 2.3467, Val Loss: 2.3832 | Probe Acc (Train): 0.664, Probe Acc (Val): 0.661 | Contrastive Acc (Train): 0.888, Contrastive Acc (Val): 0.884 | KNN Acc (Val): 0.722
+Epoch 32/100 | Train Loss: 2.3284, Val Loss: 2.3999 | Probe Acc (Train): 0.672, Probe Acc (Val): 0.656 | Contrastive Acc (Train): 0.888, Contrastive Acc (Val): 0.878 | KNN Acc (Val): 0.720
+Epoch 33/100 | Train Loss: 2.3180, Val Loss: 2.3882 | Probe Acc (Train): 0.672, Probe Acc (Val): 0.659 | Contrastive Acc (Train): 0.891, Contrastive Acc (Val): 0.896 | KNN Acc (Val): 0.722
+Epoch 34/100 | Train Loss: 2.3229, Val Loss: 2.4139 | Probe Acc (Train): 0.667, Probe Acc (Val): 0.665 | Contrastive Acc (Train): 0.886, Contrastive Acc (Val): 0.874 | KNN Acc (Val): 0.737
+Epoch 35/100 | Train Loss: 2.3047, Val Loss: 2.3898 | Probe Acc (Train): 0.673, Probe Acc (Val): 0.676 | Contrastive Acc (Train): 0.891, Contrastive Acc (Val): 0.884 | KNN Acc (Val): 0.735
+Epoch 36/100 | Train Loss: 2.3012, Val Loss: 2.3932 | Probe Acc (Train): 0.678, Probe Acc (Val): 0.673 | Contrastive Acc (Train): 0.888, Contrastive Acc (Val): 0.879 | KNN Acc (Val): 0.744
+Epoch 37/100 | Train Loss: 2.2824, Val Loss: 2.4567 | Probe Acc (Train): 0.694, Probe Acc (Val): 0.676 | Contrastive Acc (Train): 0.872, Contrastive Acc (Val): 0.871 | KNN Acc (Val): 0.732
+Epoch 38/100 | Train Loss: 2.2736, Val Loss: 2.3472 | Probe Acc (Train): 0.694, Probe Acc (Val): 0.680 | Contrastive Acc (Train): 0.906, Contrastive Acc (Val): 0.905 | KNN Acc (Val): 0.752
+Epoch 39/100 | Train Loss: 2.2700, Val Loss: 2.3649 | Probe Acc (Train): 0.683, Probe Acc (Val): 0.663 | Contrastive Acc (Train): 0.902, Contrastive Acc (Val): 0.901 | KNN Acc (Val): 0.744
+Epoch 40/100 | Train Loss: 2.2638, Val Loss: 2.4010 | Probe Acc (Train): 0.683, Probe Acc (Val): 0.666 | Contrastive Acc (Train): 0.899, Contrastive Acc (Val): 0.896 | KNN Acc (Val): 0.742
+Epoch 41/100 | Train Loss: 2.2566, Val Loss: 2.3420 | Probe Acc (Train): 0.687, Probe Acc (Val): 0.665 | Contrastive Acc (Train): 0.906, Contrastive Acc (Val): 0.896 | KNN Acc (Val): 0.752
+Epoch 42/100 | Train Loss: 2.2407, Val Loss: 2.2997 | Probe Acc (Train): 0.689, Probe Acc (Val): 0.669 | Contrastive Acc (Train): 0.920, Contrastive Acc (Val): 0.905 | KNN Acc (Val): 0.755
+Epoch 43/100 | Train Loss: 2.2455, Val Loss: 2.3470 | Probe Acc (Train): 0.686, Probe Acc (Val): 0.661 | Contrastive Acc (Train): 0.915, Contrastive Acc (Val): 0.909 | KNN Acc (Val): 0.753
+Epoch 44/100 | Train Loss: 2.2340, Val Loss: 2.3334 | Probe Acc (Train): 0.669, Probe Acc (Val): 0.674 | Contrastive Acc (Train): 0.913, Contrastive Acc (Val): 0.904 | KNN Acc (Val): 0.761
+Epoch 45/100 | Train Loss: 2.2347, Val Loss: 2.3365 | Probe Acc (Train): 0.684, Probe Acc (Val): 0.670 | Contrastive Acc (Train): 0.916, Contrastive Acc (Val): 0.904 | KNN Acc (Val): 0.761
+Epoch 46/100 | Train Loss: 2.2179, Val Loss: 2.2864 | Probe Acc (Train): 0.682, Probe Acc (Val): 0.675 | Contrastive Acc (Train): 0.925, Contrastive Acc (Val): 0.911 | KNN Acc (Val): 0.763
+Epoch 47/100 | Train Loss: 2.2121, Val Loss: 2.2816 | Probe Acc (Train): 0.686, Probe Acc (Val): 0.687 | Contrastive Acc (Train): 0.920, Contrastive Acc (Val): 0.911 | KNN Acc (Val): 0.767
+Epoch 48/100 | Train Loss: 2.2123, Val Loss: 2.3141 | Probe Acc (Train): 0.682, Probe Acc (Val): 0.667 | Contrastive Acc (Train): 0.924, Contrastive Acc (Val): 0.914 | KNN Acc (Val): 0.762
+Epoch 49/100 | Train Loss: 2.2093, Val Loss: 2.3049 | Probe Acc (Train): 0.684, Probe Acc (Val): 0.677 | Contrastive Acc (Train): 0.921, Contrastive Acc (Val): 0.916 | KNN Acc (Val): 0.767
+Epoch 50/100 | Train Loss: 2.1999, Val Loss: 2.2638 | Probe Acc (Train): 0.682, Probe Acc (Val): 0.678 | Contrastive Acc (Train): 0.930, Contrastive Acc (Val): 0.920 | KNN Acc (Val): 0.768
+Epoch 51/100 | Train Loss: 2.1846, Val Loss: 2.2796 | Probe Acc (Train): 0.696, Probe Acc (Val): 0.694 | Contrastive Acc (Train): 0.929, Contrastive Acc (Val): 0.920 | KNN Acc (Val): 0.771
+Epoch 52/100 | Train Loss: 2.1907, Val Loss: 2.2814 | Probe Acc (Train): 0.693, Probe Acc (Val): 0.675 | Contrastive Acc (Train): 0.923, Contrastive Acc (Val): 0.912 | KNN Acc (Val): 0.771
+Epoch 53/100 | Train Loss: 2.1779, Val Loss: 2.2799 | Probe Acc (Train): 0.691, Probe Acc (Val): 0.696 | Contrastive Acc (Train): 0.932, Contrastive Acc (Val): 0.921 | KNN Acc (Val): 0.779
+Epoch 54/100 | Train Loss: 2.1739, Val Loss: 2.2694 | Probe Acc (Train): 0.710, Probe Acc (Val): 0.690 | Contrastive Acc (Train): 0.933, Contrastive Acc (Val): 0.922 | KNN Acc (Val): 0.781
+Epoch 55/100 | Train Loss: 2.1695, Val Loss: 2.2530 | Probe Acc (Train): 0.698, Probe Acc (Val): 0.687 | Contrastive Acc (Train): 0.933, Contrastive Acc (Val): 0.919 | KNN Acc (Val): 0.778
+Epoch 56/100 | Train Loss: 2.1662, Val Loss: 2.2589 | Probe Acc (Train): 0.696, Probe Acc (Val): 0.674 | Contrastive Acc (Train): 0.935, Contrastive Acc (Val): 0.922 | KNN Acc (Val): 0.775
+Epoch 57/100 | Train Loss: 2.1542, Val Loss: 2.2321 | Probe Acc (Train): 0.693, Probe Acc (Val): 0.694 | Contrastive Acc (Train): 0.939, Contrastive Acc (Val): 0.922 | KNN Acc (Val): 0.789
+Epoch 58/100 | Train Loss: 2.1528, Val Loss: 2.2901 | Probe Acc (Train): 0.696, Probe Acc (Val): 0.663 | Contrastive Acc (Train): 0.921, Contrastive Acc (Val): 0.914 | KNN Acc (Val): 0.779
+Epoch 59/100 | Train Loss: 2.1446, Val Loss: 2.2861 | Probe Acc (Train): 0.704, Probe Acc (Val): 0.700 | Contrastive Acc (Train): 0.925, Contrastive Acc (Val): 0.915 | KNN Acc (Val): 0.784
+Epoch 60/100 | Train Loss: 2.1377, Val Loss: 2.2302 | Probe Acc (Train): 0.702, Probe Acc (Val): 0.706 | Contrastive Acc (Train): 0.941, Contrastive Acc (Val): 0.937 | KNN Acc (Val): 0.781
+Epoch 61/100 | Train Loss: 2.1315, Val Loss: 2.2188 | Probe Acc (Train): 0.714, Probe Acc (Val): 0.670 | Contrastive Acc (Train): 0.944, Contrastive Acc (Val): 0.933 | KNN Acc (Val): 0.789
+Epoch 62/100 | Train Loss: 2.1358, Val Loss: 2.2250 | Probe Acc (Train): 0.699, Probe Acc (Val): 0.687 | Contrastive Acc (Train): 0.944, Contrastive Acc (Val): 0.926 | KNN Acc (Val): 0.782
+Epoch 63/100 | Train Loss: 2.1188, Val Loss: 2.2060 | Probe Acc (Train): 0.700, Probe Acc (Val): 0.672 | Contrastive Acc (Train): 0.948, Contrastive Acc (Val): 0.933 | KNN Acc (Val): 0.787
+Epoch 64/100 | Train Loss: 2.1182, Val Loss: 2.2073 | Probe Acc (Train): 0.711, Probe Acc (Val): 0.683 | Contrastive Acc (Train): 0.946, Contrastive Acc (Val): 0.935 | KNN Acc (Val): 0.795
+Epoch 65/100 | Train Loss: 2.1138, Val Loss: 2.2198 | Probe Acc (Train): 0.722, Probe Acc (Val): 0.675 | Contrastive Acc (Train): 0.943, Contrastive Acc (Val): 0.930 | KNN Acc (Val): 0.788
+Epoch 66/100 | Train Loss: 2.1116, Val Loss: 2.2171 | Probe Acc (Train): 0.713, Probe Acc (Val): 0.688 | Contrastive Acc (Train): 0.949, Contrastive Acc (Val): 0.941 | KNN Acc (Val): 0.792
+Epoch 67/100 | Train Loss: 2.1024, Val Loss: 2.2074 | Probe Acc (Train): 0.702, Probe Acc (Val): 0.671 | Contrastive Acc (Train): 0.949, Contrastive Acc (Val): 0.933 | KNN Acc (Val): 0.794
+Epoch 68/100 | Train Loss: 2.0982, Val Loss: 2.1952 | Probe Acc (Train): 0.696, Probe Acc (Val): 0.699 | Contrastive Acc (Train): 0.949, Contrastive Acc (Val): 0.932 | KNN Acc (Val): 0.796
+Epoch 69/100 | Train Loss: 2.1063, Val Loss: 2.1805 | Probe Acc (Train): 0.704, Probe Acc (Val): 0.676 | Contrastive Acc (Train): 0.954, Contrastive Acc (Val): 0.945 | KNN Acc (Val): 0.796
+Epoch 70/100 | Train Loss: 2.0943, Val Loss: 2.1836 | Probe Acc (Train): 0.695, Probe Acc (Val): 0.673 | Contrastive Acc (Train): 0.953, Contrastive Acc (Val): 0.946 | KNN Acc (Val): 0.797
+Epoch 71/100 | Train Loss: 2.0884, Val Loss: 2.1941 | Probe Acc (Train): 0.709, Probe Acc (Val): 0.656 | Contrastive Acc (Train): 0.951, Contrastive Acc (Val): 0.943 | KNN Acc (Val): 0.796
+Epoch 72/100 | Train Loss: 2.0876, Val Loss: 2.1878 | Probe Acc (Train): 0.690, Probe Acc (Val): 0.690 | Contrastive Acc (Train): 0.949, Contrastive Acc (Val): 0.936 | KNN Acc (Val): 0.797
+Epoch 73/100 | Train Loss: 2.0870, Val Loss: 2.1892 | Probe Acc (Train): 0.721, Probe Acc (Val): 0.684 | Contrastive Acc (Train): 0.955, Contrastive Acc (Val): 0.946 | KNN Acc (Val): 0.795
+Epoch 74/100 | Train Loss: 2.0761, Val Loss: 2.1849 | Probe Acc (Train): 0.714, Probe Acc (Val): 0.683 | Contrastive Acc (Train): 0.955, Contrastive Acc (Val): 0.945 | KNN Acc (Val): 0.799
+Epoch 75/100 | Train Loss: 2.0727, Val Loss: 2.1818 | Probe Acc (Train): 0.720, Probe Acc (Val): 0.678 | Contrastive Acc (Train): 0.954, Contrastive Acc (Val): 0.942 | KNN Acc (Val): 0.800
+Epoch 76/100 | Train Loss: 2.0734, Val Loss: 2.1775 | Probe Acc (Train): 0.686, Probe Acc (Val): 0.666 | Contrastive Acc (Train): 0.959, Contrastive Acc (Val): 0.946 | KNN Acc (Val): 0.801
+Epoch 77/100 | Train Loss: 2.0615, Val Loss: 2.2004 | Probe Acc (Train): 0.691, Probe Acc (Val): 0.681 | Contrastive Acc (Train): 0.950, Contrastive Acc (Val): 0.933 | KNN Acc (Val): 0.798
+Epoch 78/100 | Train Loss: 2.0654, Val Loss: 2.1586 | Probe Acc (Train): 0.722, Probe Acc (Val): 0.702 | Contrastive Acc (Train): 0.960, Contrastive Acc (Val): 0.947 | KNN Acc (Val): 0.794
+Epoch 79/100 | Train Loss: 2.0560, Val Loss: 2.1483 | Probe Acc (Train): 0.705, Probe Acc (Val): 0.677 | Contrastive Acc (Train): 0.958, Contrastive Acc (Val): 0.943 | KNN Acc (Val): 0.799
+Epoch 80/100 | Train Loss: 2.0594, Val Loss: 2.1583 | Probe Acc (Train): 0.689, Probe Acc (Val): 0.708 | Contrastive Acc (Train): 0.959, Contrastive Acc (Val): 0.945 | KNN Acc (Val): 0.802
+Epoch 81/100 | Train Loss: 2.0516, Val Loss: 2.1616 | Probe Acc (Train): 0.684, Probe Acc (Val): 0.695 | Contrastive Acc (Train): 0.961, Contrastive Acc (Val): 0.944 | KNN Acc (Val): 0.798
+Epoch 82/100 | Train Loss: 2.0539, Val Loss: 2.1567 | Probe Acc (Train): 0.699, Probe Acc (Val): 0.697 | Contrastive Acc (Train): 0.960, Contrastive Acc (Val): 0.951 | KNN Acc (Val): 0.799
+Epoch 83/100 | Train Loss: 2.0462, Val Loss: 2.1788 | Probe Acc (Train): 0.698, Probe Acc (Val): 0.664 | Contrastive Acc (Train): 0.960, Contrastive Acc (Val): 0.949 | KNN Acc (Val): 0.798
+Epoch 84/100 | Train Loss: 2.0446, Val Loss: 2.1594 | Probe Acc (Train): 0.716, Probe Acc (Val): 0.691 | Contrastive Acc (Train): 0.964, Contrastive Acc (Val): 0.954 | KNN Acc (Val): 0.801
+Epoch 85/100 | Train Loss: 2.0351, Val Loss: 2.1513 | Probe Acc (Train): 0.696, Probe Acc (Val): 0.708 | Contrastive Acc (Train): 0.961, Contrastive Acc (Val): 0.948 | KNN Acc (Val): 0.805
+Epoch 86/100 | Train Loss: 2.0403, Val Loss: 2.1524 | Probe Acc (Train): 0.689, Probe Acc (Val): 0.677 | Contrastive Acc (Train): 0.964, Contrastive Acc (Val): 0.951 | KNN Acc (Val): 0.803
+Epoch 87/100 | Train Loss: 2.0398, Val Loss: 2.1414 | Probe Acc (Train): 0.716, Probe Acc (Val): 0.691 | Contrastive Acc (Train): 0.965, Contrastive Acc (Val): 0.953 | KNN Acc (Val): 0.803
+Epoch 88/100 | Train Loss: 2.0368, Val Loss: 2.1505 | Probe Acc (Train): 0.692, Probe Acc (Val): 0.675 | Contrastive Acc (Train): 0.964, Contrastive Acc (Val): 0.946 | KNN Acc (Val): 0.799
+Epoch 89/100 | Train Loss: 2.0287, Val Loss: 2.1431 | Probe Acc (Train): 0.694, Probe Acc (Val): 0.693 | Contrastive Acc (Train): 0.964, Contrastive Acc (Val): 0.955 | KNN Acc (Val): 0.805
+Epoch 90/100 | Train Loss: 2.0347, Val Loss: 2.1552 | Probe Acc (Train): 0.690, Probe Acc (Val): 0.678 | Contrastive Acc (Train): 0.965, Contrastive Acc (Val): 0.950 | KNN Acc (Val): 0.804
+Epoch 91/100 | Train Loss: 2.0329, Val Loss: 2.1392 | Probe Acc (Train): 0.699, Probe Acc (Val): 0.700 | Contrastive Acc (Train): 0.967, Contrastive Acc (Val): 0.951 | KNN Acc (Val): 0.806
+Epoch 92/100 | Train Loss: 2.0333, Val Loss: 2.1463 | Probe Acc (Train): 0.702, Probe Acc (Val): 0.680 | Contrastive Acc (Train): 0.965, Contrastive Acc (Val): 0.954 | KNN Acc (Val): 0.800
+Epoch 93/100 | Train Loss: 2.0268, Val Loss: 2.1355 | Probe Acc (Train): 0.707, Probe Acc (Val): 0.676 | Contrastive Acc (Train): 0.966, Contrastive Acc (Val): 0.953 | KNN Acc (Val): 0.803
+Epoch 94/100 | Train Loss: 2.0238, Val Loss: 2.1357 | Probe Acc (Train): 0.707, Probe Acc (Val): 0.678 | Contrastive Acc (Train): 0.964, Contrastive Acc (Val): 0.951 | KNN Acc (Val): 0.803
+Epoch 95/100 | Train Loss: 2.0275, Val Loss: 2.1361 | Probe Acc (Train): 0.694, Probe Acc (Val): 0.696 | Contrastive Acc (Train): 0.969, Contrastive Acc (Val): 0.950 | KNN Acc (Val): 0.802
+Epoch 96/100 | Train Loss: 2.0233, Val Loss: 2.1370 | Probe Acc (Train): 0.691, Probe Acc (Val): 0.678 | Contrastive Acc (Train): 0.967, Contrastive Acc (Val): 0.949 | KNN Acc (Val): 0.803
+Epoch 97/100 | Train Loss: 2.0249, Val Loss: 2.1326 | Probe Acc (Train): 0.717, Probe Acc (Val): 0.680 | Contrastive Acc (Train): 0.967, Contrastive Acc (Val): 0.956 | KNN Acc (Val): 0.804
+Epoch 98/100 | Train Loss: 2.0227, Val Loss: 2.1404 | Probe Acc (Train): 0.686, Probe Acc (Val): 0.690 | Contrastive Acc (Train): 0.966, Contrastive Acc (Val): 0.955 | KNN Acc (Val): 0.802
+Epoch 99/100 | Train Loss: 2.0286, Val Loss: 2.1487 | Probe Acc (Train): 0.704, Probe Acc (Val): 0.649 | Contrastive Acc (Train): 0.968, Contrastive Acc (Val): 0.951 | KNN Acc (Val): 0.803
+Epoch 100/100 | Train Loss: 2.0224, Val Loss: 2.1375 | Probe Acc (Train): 0.709, Probe Acc (Val): 0.693 | Contrastive Acc (Train): 0.966, Contrastive Acc (Val): 0.954 | KNN Acc (Val): 0.801
+Final contrastive accuracy on val split: 95.83%
+Final contrastive accuracy on train split: 96.69%
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:            contrastive_train_acc ▁▂▃▆▇▇▇▇▇▇▇▇████████████████████████████
+wandb:              contrastive_val_acc ▁▂▅▆▆▆▆▇▇▇▇▇▇▇▇██▇██████████████████████
+wandb:                            epoch ▁▁▂▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇▇▇███
+wandb:       final_contrastive_accuracy ▁
+wandb: final_contrastive_accuracy_train ▁
+wandb:                    final_knn_acc ▁
+wandb:                      knn_val_acc ▁▂▃▃▄▄▄▄▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇██████████████
+wandb:             linear_probe_acc_val ▁▃▅▅▅▆▆▆▇▆▆▇▇▇▇▇▇██▇▇█▇▇▇▇█▇▇▇█▇██▇▇▇▇▇█
+wandb:           linear_probe_train_acc ▁▂▃▄▅▅▆▅▅▅▅▆▇▆▆▆▆▆▇▇▇▇▇█▇▇▇█▆▇▇▇▇█▇▇▇▇▇▇
+wandb:                simclr_train_loss █▄▃▃▃▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                  simclr_val_loss █▅▅▄▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:            contrastive_train_acc 0.96591
+wandb:              contrastive_val_acc 0.95352
+wandb:                            epoch 100
+wandb:       final_contrastive_accuracy 0.95833
+wandb: final_contrastive_accuracy_train 0.96694
+wandb:                    final_knn_acc 0.80074
+wandb:                      knn_val_acc 0.80074
+wandb:             linear_probe_acc_val 0.69333
+wandb:           linear_probe_train_acc 0.70931
+wandb:                simclr_train_loss 2.02241
+wandb:                  simclr_val_loss 2.13748
+wandb: 
+wandb: 🚀 View run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS100 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/lif98c43
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250624_183900-lif98c43/logs
+wandb: Tracking run with wandb version 0.20.1
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250625_000521-jp0b84un
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run linear_probe_seed42_temperature0.2_bs256
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/jp0b84un
+Final kNN (k=5) on val: 80.07%
+Model saved to models/simclr_seed42_bs256_temp0.2_Tepochs100_lr0.000375.pth
+All runs completed.
+Using mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Using std: [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 94/11 batches
+Train + Val loader: 94 batches
+Starting linear probe training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate   use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+[Linear Probe] Epoch 1/20 - Loss: 1.8553, Accuracy: 51.91%
+[Linear Probe] Epoch 2/20 - Loss: 1.0811, Accuracy: 76.52%
+[Linear Probe] Epoch 3/20 - Loss: 0.9908, Accuracy: 77.37%
+[Linear Probe] Epoch 4/20 - Loss: 0.9716, Accuracy: 77.32%
+[Linear Probe] Epoch 5/20 - Loss: 0.9653, Accuracy: 77.74%
+[Linear Probe] Epoch 6/20 - Loss: 0.9630, Accuracy: 77.61%
+[Linear Probe] Epoch 7/20 - Loss: 0.9621, Accuracy: 77.87%
+[Linear Probe] Epoch 8/20 - Loss: 0.9606, Accuracy: 77.64%
+[Linear Probe] Epoch 9/20 - Loss: 0.9602, Accuracy: 77.66%
+[Linear Probe] Epoch 10/20 - Loss: 0.9586, Accuracy: 77.78%
+[Linear Probe] Epoch 11/20 - Loss: 0.9582, Accuracy: 78.07%
+[Linear Probe] Epoch 12/20 - Loss: 0.9574, Accuracy: 77.78%
+[Linear Probe] Epoch 13/20 - Loss: 0.9556, Accuracy: 77.91%
+[Linear Probe] Epoch 14/20 - Loss: 0.9548, Accuracy: 78.14%
+[Linear Probe] Epoch 15/20 - Loss: 0.9568, Accuracy: 78.08%
+[Linear Probe] Epoch 16/20 - Loss: 0.9551, Accuracy: 78.16%
+[Linear Probe] Epoch 17/20 - Loss: 0.9531, Accuracy: 78.30%
+[Linear Probe] Epoch 18/20 - Loss: 0.9531, Accuracy: 78.43%
+[Linear Probe] Epoch 19/20 - Loss: 0.9548, Accuracy: 78.33%
+[Linear Probe] Epoch 20/20 - Loss: 0.9528, Accuracy: 78.29%
+Test Accuracy: 77.22%
+Linear probe accuracy: 78.29%, Test accuracy: 77.22%
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlinear_probe_seed42_temperature0.2_bs256[0m at: [34mhttps://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/jp0b84un[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250625_000521-jp0b84un/logs[0m

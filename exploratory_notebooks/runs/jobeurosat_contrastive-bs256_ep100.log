@@ -25,7 +25,7 @@ Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
 Mean and std saved to models/mean_std.txt
 Train/Val/Test loaders: 84/11/11 batches
 Starting SimCLR training...
-/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate   use case: https://github.com/pytorch/pytorch/issues/new/choose.
   warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
 Epoch 01/100 | Train Loss: 5.6064, Val Loss: 4.9527 | Probe Acc: 0.398
 Epoch 02/100 | Train Loss: 4.4386, Val Loss: 4.0901 | Probe Acc: 0.540
@@ -160,7 +160,7 @@ Stratified split sizes: train=21600, val=2700, test=2700
 Train/Test loaders: 94/11 batches
 Train + Val loader: 94 batches
 Starting linear probe training...
-/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate   use case: https://github.com/pytorch/pytorch/issues/new/choose.
   warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
 [Linear Probe] Epoch 1/20 - Loss: 1.8747, Accuracy: 50.59%
 [Linear Probe] Epoch 2/20 - Loss: 1.1038, Accuracy: 76.08%
