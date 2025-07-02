@@ -1,0 +1,227 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 3
+Torchvision version: 0.20.1
+Successfully set to use GPU: 0 (Quadro RTX 6000)
+Final DEVICE variable is set to: cuda:0
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 0
+Dummy tensor is on device: cuda:0
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Computed mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 84/11/11 batches
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.20.1
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250702_131017-kj6zg2pr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS60
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/kj6zg2pr
+Computed mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 84/11/11 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+Epoch 01/60 | Train Loss: 5.9320, Val Loss: 5.8069 | 
+Epoch 02/60 | Train Loss: 5.6455, Val Loss: 5.5894 | 
+Epoch 03/60 | Train Loss: 5.3914, Val Loss: 5.2916 | 
+Epoch 04/60 | Train Loss: 5.2225, Val Loss: 5.1062 | 
+Epoch 05/60 | Train Loss: 5.0895, Val Loss: 5.0754 | 
+Epoch 06/60 | Train Loss: 4.9498, Val Loss: 4.9569 | 
+Epoch 07/60 | Train Loss: 4.8146, Val Loss: 4.7372 | 
+Epoch 08/60 | Train Loss: 4.6605, Val Loss: 4.6793 | 
+Epoch 09/60 | Train Loss: 4.5720, Val Loss: 4.6160 | 
+Epoch 10/60 | Train Loss: 4.5130, Val Loss: 4.6323 | 
+Epoch 11/60 | Train Loss: 4.4460, Val Loss: 4.5618 | 
+Epoch 12/60 | Train Loss: 4.4248, Val Loss: 4.4110 | 
+Epoch 13/60 | Train Loss: 4.3489, Val Loss: 4.4075 | 
+Epoch 14/60 | Train Loss: 4.3224, Val Loss: 4.4716 | 
+Epoch 15/60 | Train Loss: 4.2546, Val Loss: 4.4398 | 
+Epoch 16/60 | Train Loss: 4.2142, Val Loss: 4.2822 | 
+Epoch 17/60 | Train Loss: 4.1844, Val Loss: 4.3206 | 
+Epoch 18/60 | Train Loss: 4.1634, Val Loss: 4.2167 | 
+Epoch 19/60 | Train Loss: 4.1307, Val Loss: 4.1538 | 
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 80.19%
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 85.15%
+Epoch 20/60 | Train Loss: 4.0982, Val Loss: 4.1228 | 
+Epoch 21/60 | Train Loss: 4.0450, Val Loss: 4.1442 | 
+Epoch 22/60 | Train Loss: 4.0202, Val Loss: 4.0564 | 
+Epoch 23/60 | Train Loss: 4.0059, Val Loss: 4.1835 | 
+Epoch 24/60 | Train Loss: 3.9875, Val Loss: 4.0046 | 
+Epoch 25/60 | Train Loss: 3.9522, Val Loss: 3.9572 | 
+Epoch 26/60 | Train Loss: 3.9439, Val Loss: 3.9874 | 
+Epoch 27/60 | Train Loss: 3.9284, Val Loss: 3.9017 | 
+Epoch 28/60 | Train Loss: 3.8928, Val Loss: 4.0530 | 
+Epoch 29/60 | Train Loss: 3.8828, Val Loss: 3.8900 | 
+Epoch 30/60 | Train Loss: 3.8627, Val Loss: 3.9962 | 
+Epoch 31/60 | Train Loss: 3.8443, Val Loss: 3.9782 | 
+Epoch 32/60 | Train Loss: 3.8209, Val Loss: 3.9041 | 
+Epoch 33/60 | Train Loss: 3.8083, Val Loss: 3.8802 | 
+Epoch 34/60 | Train Loss: 3.8036, Val Loss: 3.7556 | 
+Epoch 35/60 | Train Loss: 3.7783, Val Loss: 3.7835 | 
+Epoch 36/60 | Train Loss: 3.7631, Val Loss: 3.8393 | 
+Epoch 37/60 | Train Loss: 3.7535, Val Loss: 3.7573 | 
+Epoch 38/60 | Train Loss: 3.7241, Val Loss: 3.8147 | 
+Epoch 39/60 | Train Loss: 3.7088, Val Loss: 3.7209 | 
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 83.85%
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 89.20%
+Epoch 40/60 | Train Loss: 3.7093, Val Loss: 3.7627 | 
+Epoch 41/60 | Train Loss: 3.6911, Val Loss: 3.7400 | 
+Epoch 42/60 | Train Loss: 3.6901, Val Loss: 3.7406 | 
+Epoch 43/60 | Train Loss: 3.6619, Val Loss: 3.7183 | 
+Epoch 44/60 | Train Loss: 3.6515, Val Loss: 3.6711 | 
+Epoch 45/60 | Train Loss: 3.6375, Val Loss: 3.6587 | 
+Epoch 46/60 | Train Loss: 3.6346, Val Loss: 3.7063 | 
+Epoch 47/60 | Train Loss: 3.6278, Val Loss: 3.6214 | 
+Epoch 48/60 | Train Loss: 3.6141, Val Loss: 3.6423 | 
+Epoch 49/60 | Train Loss: 3.6135, Val Loss: 3.6239 | 
+Epoch 50/60 | Train Loss: 3.6049, Val Loss: 3.6430 | 
+Epoch 51/60 | Train Loss: 3.5951, Val Loss: 3.6508 | 
+Epoch 52/60 | Train Loss: 3.5914, Val Loss: 3.6513 | 
+Epoch 53/60 | Train Loss: 3.5837, Val Loss: 3.5944 | 
+Epoch 54/60 | Train Loss: 3.5824, Val Loss: 3.5695 | 
+Epoch 55/60 | Train Loss: 3.5824, Val Loss: 3.5808 | 
+Epoch 56/60 | Train Loss: 3.5788, Val Loss: 3.5861 | 
+Epoch 57/60 | Train Loss: 3.5670, Val Loss: 3.5767 | 
+Epoch 58/60 | Train Loss: 3.5771, Val Loss: 3.5628 | 
+Epoch 59/60 | Train Loss: 3.5668, Val Loss: 3.5831 | 
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 85.15%
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 200 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=200).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 90.06%
+Epoch 60/60 | Train Loss: 3.5748, Val Loss: 3.6196 | 
+Final contrastive accuracy on val split: 38.17%
+Final contrastive accuracy on train split: 37.67%
+Final kNN (k=5) on train: 100.00%
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:            contrastive_train_acc ▁▁▁▁▁▃▃▃▃▃▃▃▃▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇█████████
+wandb:              contrastive_val_acc ▁▁▁▁▁▁▁▃▃▃▃▃▃▃▅▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇████████
+wandb:                            epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇███
+wandb:       final_contrastive_accuracy ▁
+wandb: final_contrastive_accuracy_train ▁
+wandb:                    final_knn_acc ▁
+wandb:                      knn_val_acc ▁▁▁▁▁▁▇▇▇▇▇▇▇▇▇▇▇▇▇▇████████████████████
+wandb:               logistic_probe_acc ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁████████████████████████
+wandb:         logistic_probe_train_acc ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█████████████████████████
+wandb:                simclr_train_loss █▇▆▆▆▅▄▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                  simclr_val_loss █▇▆▆▆▅▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▁▂▂▂▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:            contrastive_train_acc 0.37616
+wandb:              contrastive_val_acc 0.38389
+wandb:                            epoch 60
+wandb:       final_contrastive_accuracy 0.38167
+wandb: final_contrastive_accuracy_train 0.37672
+wandb:                    final_knn_acc 0.8137
+wandb:                      knn_val_acc 0.8137
+wandb:               logistic_probe_acc 0.85148
+wandb:         logistic_probe_train_acc 0.9006
+wandb:                simclr_train_loss 3.57477
+wandb:                  simclr_val_loss 3.6196
+wandb: 
+wandb: 🚀 View run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS60 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/kj6zg2pr
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250702_131017-kj6zg2pr/logs
+wandb: Tracking run with wandb version 0.20.1
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250702_143332-5dyjebd1
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run logistic_probe_seed42_temperature0.2_bs256
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/5dyjebd1
+Final kNN (k=5) on val: 81.37%
+Model saved to models/simclr_seed42_bs256_temp0.2_Tepochs60_lr0.000375.pth
+All runs completed.
+Using mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Using std: [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 94/11 batches
+[Data] train+val loader has 94 batches
+Fitting logistic regression probe…
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+[Probe] Train+Val Acc: 82.88%,  Test Acc: 81.41%
+Saved probe + encoder to models/logistic_probe_seed42_bs256.pkl
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlogistic_probe_seed42_temperature0.2_bs256[0m at: [34mhttps://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/5dyjebd1[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250702_143332-5dyjebd1/logs[0m
