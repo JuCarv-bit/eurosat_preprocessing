@@ -1,0 +1,75 @@
+_wandb:
+    value:
+        cli_version: 0.20.1
+        m: []
+        python_version: 3.10.16
+        t:
+            "1":
+                - 1
+                - 5
+                - 41
+                - 53
+            "2":
+                - 1
+                - 5
+                - 41
+                - 53
+            "3":
+                - 13
+                - 15
+                - 16
+                - 55
+            "4": 3.10.16
+            "5": 0.20.1
+            "12": 0.20.1
+            "13": linux-x86_64
+BATCH_SIZE:
+    value: 256
+DATA_DIR:
+    value: /share/DEEPLEARNING/carvalhj/EuroSAT_RGB/
+EPOCH_SAVE_INTERVAL:
+    value: 10
+EPOCHS_SIMCLR:
+    value: 2
+FEATURE_DIM:
+    value: 512
+GPU_INDEX:
+    value: 0
+IMAGE_SIZE:
+    value: 64
+INTERVAL_EPOCHS_KNN:
+    value: 10
+INTERVAL_EPOCHS_LINEAR_PROBE:
+    value: 2
+K:
+    value: 5
+LR:
+    value: 0.000375
+MEAN:
+    value:
+        - 0.3441
+        - 0.3801
+        - 0.4077
+MODEL_SAVE_DIR:
+    value: models/
+NUM_WORKERS:
+    value: 8
+PRETRAINED:
+    value: false
+PROJ_DIM:
+    value: 64
+SEED:
+    value: 42
+STD:
+    value:
+        - 0.093
+        - 0.0646
+        - 0.0541
+TEMPERATURE:
+    value: 0.2
+WANDB_PROJECT:
+    value: eurosat-contrastive-scratch
+WD:
+    value: 0.5
+device:
+    value: cuda:0
