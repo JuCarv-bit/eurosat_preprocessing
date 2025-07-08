@@ -1,0 +1,88 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 3
+Torchvision version: 0.20.1
+Successfully set to use GPU: 0 (Quadro RTX 5000)
+Final DEVICE variable is set to: cuda:0
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 0
+Dummy tensor is on device: cuda:0
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250619_110552-eg2po84h
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS256_LR4e-04_SEED42_TEMPERATURE100
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/eg2po84h
+Computed mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 84/11/11 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+Epoch 01/100 | Train Loss: 6.2029, Val Loss: 6.1964 | Probe Acc: 0.357
+Epoch 02/100 | Train Loss: 6.1996, Val Loss: 6.1956 | Probe Acc: 0.386
+Epoch 03/100 | Train Loss: 6.1993, Val Loss: 6.1956 | Probe Acc: 0.340
+Epoch 04/100 | Train Loss: 6.1993, Val Loss: 6.1955 | Probe Acc: 0.367
+Epoch 05/100 | Train Loss: 6.1993, Val Loss: 6.1955 | Probe Acc: 0.317
+Epoch 06/100 | Train Loss: 6.1992, Val Loss: 6.1955 | Probe Acc: 0.314
+Epoch 07/100 | Train Loss: 6.1991, Val Loss: 6.1953 | Probe Acc: 0.320
+Epoch 08/100 | Train Loss: 6.1991, Val Loss: 6.1953 | Probe Acc: 0.324
+Epoch 09/100 | Train Loss: 6.1990, Val Loss: 6.1954 | Probe Acc: 0.318
+Epoch 10/100 | Train Loss: 6.1990, Val Loss: 6.1954 | Probe Acc: 0.334
+Epoch 11/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.357
+Epoch 12/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.323
+Epoch 13/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.319
+Epoch 14/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.357
+Epoch 15/100 | Train Loss: 6.1990, Val Loss: 6.1952 | Probe Acc: 0.317
+Epoch 16/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.328
+Epoch 17/100 | Train Loss: 6.1989, Val Loss: 6.1953 | Probe Acc: 0.319
+Epoch 18/100 | Train Loss: 6.1990, Val Loss: 6.1953 | Probe Acc: 0.329
+Epoch 19/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.310
+Epoch 20/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.333
+Epoch 21/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.333
+Epoch 22/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.359
+Epoch 23/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.324
+Epoch 24/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.351
+Epoch 25/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.359
+Epoch 26/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.326
+Epoch 27/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.365
+Epoch 28/100 | Train Loss: 6.1989, Val Loss: 6.1952 | Probe Acc: 0.312
+Traceback (most recent call last):
+  File "/users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/eurosat_contrastive-bs256_ep100_temp_100.py", line 815, in <module>
+    train_simclr(
+  File "/users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/eurosat_contrastive-bs256_ep100_temp_100.py", line 477, in train_simclr
+    _, z2 = model(x2)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/eurosat_contrastive-bs256_ep100_temp_100.py", line 323, in forward
+    feat = self.encoder(x)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torchvision/models/resnet.py", line 285, in forward
+    return self._forward_impl(x)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torchvision/models/resnet.py", line 268, in _forward_impl
+    x = self.conv1(x)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 554, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 549, in _conv_forward
+    return F.conv2d(
+KeyboardInterrupt
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mBS256_LR4e-04_SEED42_TEMPERATURE100[0m at: [34mhttps://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/eg2po84h[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250619_110552-eg2po84h/logs[0m

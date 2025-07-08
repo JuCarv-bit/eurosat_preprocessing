@@ -1,0 +1,199 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 3
+Torchvision version: 0.20.1
+Successfully set to use GPU: 1 (Quadro RTX 5000)
+Final DEVICE variable is set to: cuda:1
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 1
+Dummy tensor is on device: cuda:1
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250620_141845-jx9oyxau
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS256_LR4e-04_SEED42_TEMPERATURE0.2
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/jx9oyxau
+Computed mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Computed std:  [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 84/11/11 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+('Epoch 01/100 | Train Loss: 5.6476, Val Loss: 5.0703 | Probe Acc: 0.408 |Contrastive Acc val: 0.035', 'Contrastive Acc train: 0.033')
+('Epoch 02/100 | Train Loss: 4.5162, Val Loss: 4.2088 | Probe Acc: 0.481 |Contrastive Acc val: 0.137', 'Contrastive Acc train: 0.140')
+('Epoch 03/100 | Train Loss: 3.9788, Val Loss: 3.8246 | Probe Acc: 0.500 |Contrastive Acc val: 0.265', 'Contrastive Acc train: 0.262')
+('Epoch 04/100 | Train Loss: 3.6270, Val Loss: 3.5129 | Probe Acc: 0.555 |Contrastive Acc val: 0.371', 'Contrastive Acc train: 0.365')
+('Epoch 05/100 | Train Loss: 3.3323, Val Loss: 3.2320 | Probe Acc: 0.555 |Contrastive Acc val: 0.478', 'Contrastive Acc train: 0.476')
+('Epoch 06/100 | Train Loss: 3.1904, Val Loss: 3.1617 | Probe Acc: 0.560 |Contrastive Acc val: 0.542', 'Contrastive Acc train: 0.544')
+('Epoch 07/100 | Train Loss: 3.0537, Val Loss: 3.0158 | Probe Acc: 0.581 |Contrastive Acc val: 0.593', 'Contrastive Acc train: 0.597')
+('Epoch 08/100 | Train Loss: 2.9633, Val Loss: 2.9972 | Probe Acc: 0.578 |Contrastive Acc val: 0.638', 'Contrastive Acc train: 0.637')
+('Epoch 09/100 | Train Loss: 2.8717, Val Loss: 2.9321 | Probe Acc: 0.573 |Contrastive Acc val: 0.676', 'Contrastive Acc train: 0.664')
+('Epoch 10/100 | Train Loss: 2.8256, Val Loss: 2.8429 | Probe Acc: 0.581 |Contrastive Acc val: 0.700', 'Contrastive Acc train: 0.703')
+('Epoch 11/100 | Train Loss: 2.7770, Val Loss: 2.7661 | Probe Acc: 0.567 |Contrastive Acc val: 0.727', 'Contrastive Acc train: 0.741')
+('Epoch 12/100 | Train Loss: 2.7258, Val Loss: 2.7637 | Probe Acc: 0.599 |Contrastive Acc val: 0.740', 'Contrastive Acc train: 0.740')
+('Epoch 13/100 | Train Loss: 2.6624, Val Loss: 2.7198 | Probe Acc: 0.589 |Contrastive Acc val: 0.766', 'Contrastive Acc train: 0.758')
+('Epoch 14/100 | Train Loss: 2.6378, Val Loss: 2.6872 | Probe Acc: 0.600 |Contrastive Acc val: 0.783', 'Contrastive Acc train: 0.779')
+('Epoch 15/100 | Train Loss: 2.6036, Val Loss: 2.6896 | Probe Acc: 0.603 |Contrastive Acc val: 0.772', 'Contrastive Acc train: 0.777')
+('Epoch 16/100 | Train Loss: 2.5715, Val Loss: 2.6172 | Probe Acc: 0.601 |Contrastive Acc val: 0.797', 'Contrastive Acc train: 0.802')
+('Epoch 17/100 | Train Loss: 2.5549, Val Loss: 2.6153 | Probe Acc: 0.607 |Contrastive Acc val: 0.815', 'Contrastive Acc train: 0.804')
+('Epoch 18/100 | Train Loss: 2.5268, Val Loss: 2.5927 | Probe Acc: 0.602 |Contrastive Acc val: 0.815', 'Contrastive Acc train: 0.819')
+('Epoch 19/100 | Train Loss: 2.5113, Val Loss: 2.5500 | Probe Acc: 0.613 |Contrastive Acc val: 0.832', 'Contrastive Acc train: 0.837')
+('Epoch 20/100 | Train Loss: 2.4818, Val Loss: 2.5470 | Probe Acc: 0.626 |Contrastive Acc val: 0.839', 'Contrastive Acc train: 0.850')
+('Epoch 21/100 | Train Loss: 2.4581, Val Loss: 2.5222 | Probe Acc: 0.626 |Contrastive Acc val: 0.847', 'Contrastive Acc train: 0.853')
+('Epoch 22/100 | Train Loss: 2.4519, Val Loss: 2.5034 | Probe Acc: 0.635 |Contrastive Acc val: 0.857', 'Contrastive Acc train: 0.850')
+('Epoch 23/100 | Train Loss: 2.4429, Val Loss: 2.4856 | Probe Acc: 0.635 |Contrastive Acc val: 0.858', 'Contrastive Acc train: 0.859')
+('Epoch 24/100 | Train Loss: 2.4211, Val Loss: 2.4642 | Probe Acc: 0.642 |Contrastive Acc val: 0.860', 'Contrastive Acc train: 0.868')
+('Epoch 25/100 | Train Loss: 2.4094, Val Loss: 2.4657 | Probe Acc: 0.642 |Contrastive Acc val: 0.873', 'Contrastive Acc train: 0.873')
+('Epoch 26/100 | Train Loss: 2.3993, Val Loss: 2.4602 | Probe Acc: 0.640 |Contrastive Acc val: 0.867', 'Contrastive Acc train: 0.874')
+('Epoch 27/100 | Train Loss: 2.3952, Val Loss: 2.4379 | Probe Acc: 0.621 |Contrastive Acc val: 0.866', 'Contrastive Acc train: 0.873')
+('Epoch 28/100 | Train Loss: 2.3864, Val Loss: 2.4557 | Probe Acc: 0.647 |Contrastive Acc val: 0.874', 'Contrastive Acc train: 0.878')
+('Epoch 29/100 | Train Loss: 2.3605, Val Loss: 2.4441 | Probe Acc: 0.637 |Contrastive Acc val: 0.875', 'Contrastive Acc train: 0.877')
+('Epoch 30/100 | Train Loss: 2.3567, Val Loss: 2.3993 | Probe Acc: 0.661 |Contrastive Acc val: 0.880', 'Contrastive Acc train: 0.889')
+('Epoch 31/100 | Train Loss: 2.3426, Val Loss: 2.4083 | Probe Acc: 0.650 |Contrastive Acc val: 0.896', 'Contrastive Acc train: 0.889')
+('Epoch 32/100 | Train Loss: 2.3352, Val Loss: 2.4003 | Probe Acc: 0.644 |Contrastive Acc val: 0.889', 'Contrastive Acc train: 0.889')
+('Epoch 33/100 | Train Loss: 2.3192, Val Loss: 2.4110 | Probe Acc: 0.642 |Contrastive Acc val: 0.895', 'Contrastive Acc train: 0.892')
+('Epoch 34/100 | Train Loss: 2.3275, Val Loss: 2.3864 | Probe Acc: 0.649 |Contrastive Acc val: 0.897', 'Contrastive Acc train: 0.899')
+('Epoch 35/100 | Train Loss: 2.3042, Val Loss: 2.3942 | Probe Acc: 0.671 |Contrastive Acc val: 0.894', 'Contrastive Acc train: 0.897')
+('Epoch 36/100 | Train Loss: 2.3006, Val Loss: 2.3797 | Probe Acc: 0.656 |Contrastive Acc val: 0.910', 'Contrastive Acc train: 0.902')
+('Epoch 37/100 | Train Loss: 2.2863, Val Loss: 2.3478 | Probe Acc: 0.675 |Contrastive Acc val: 0.891', 'Contrastive Acc train: 0.903')
+('Epoch 38/100 | Train Loss: 2.2688, Val Loss: 2.3310 | Probe Acc: 0.649 |Contrastive Acc val: 0.911', 'Contrastive Acc train: 0.915')
+('Epoch 39/100 | Train Loss: 2.2790, Val Loss: 2.3619 | Probe Acc: 0.646 |Contrastive Acc val: 0.895', 'Contrastive Acc train: 0.907')
+('Epoch 40/100 | Train Loss: 2.2678, Val Loss: 2.3446 | Probe Acc: 0.639 |Contrastive Acc val: 0.911', 'Contrastive Acc train: 0.913')
+('Epoch 41/100 | Train Loss: 2.2565, Val Loss: 2.3299 | Probe Acc: 0.657 |Contrastive Acc val: 0.911', 'Contrastive Acc train: 0.916')
+('Epoch 42/100 | Train Loss: 2.2445, Val Loss: 2.3109 | Probe Acc: 0.664 |Contrastive Acc val: 0.911', 'Contrastive Acc train: 0.920')
+('Epoch 43/100 | Train Loss: 2.2527, Val Loss: 2.3474 | Probe Acc: 0.659 |Contrastive Acc val: 0.915', 'Contrastive Acc train: 0.916')
+('Epoch 44/100 | Train Loss: 2.2372, Val Loss: 2.3342 | Probe Acc: 0.671 |Contrastive Acc val: 0.909', 'Contrastive Acc train: 0.919')
+('Epoch 45/100 | Train Loss: 2.2366, Val Loss: 2.3212 | Probe Acc: 0.668 |Contrastive Acc val: 0.912', 'Contrastive Acc train: 0.918')
+('Epoch 46/100 | Train Loss: 2.2224, Val Loss: 2.3023 | Probe Acc: 0.651 |Contrastive Acc val: 0.919', 'Contrastive Acc train: 0.925')
+('Epoch 47/100 | Train Loss: 2.2177, Val Loss: 2.2880 | Probe Acc: 0.667 |Contrastive Acc val: 0.916', 'Contrastive Acc train: 0.922')
+('Epoch 48/100 | Train Loss: 2.2091, Val Loss: 2.2881 | Probe Acc: 0.656 |Contrastive Acc val: 0.917', 'Contrastive Acc train: 0.928')
+('Epoch 49/100 | Train Loss: 2.2123, Val Loss: 2.2903 | Probe Acc: 0.674 |Contrastive Acc val: 0.920', 'Contrastive Acc train: 0.931')
+('Epoch 50/100 | Train Loss: 2.2000, Val Loss: 2.2700 | Probe Acc: 0.676 |Contrastive Acc val: 0.927', 'Contrastive Acc train: 0.934')
+('Epoch 51/100 | Train Loss: 2.1960, Val Loss: 2.2951 | Probe Acc: 0.660 |Contrastive Acc val: 0.924', 'Contrastive Acc train: 0.930')
+('Epoch 52/100 | Train Loss: 2.1897, Val Loss: 2.2716 | Probe Acc: 0.668 |Contrastive Acc val: 0.916', 'Contrastive Acc train: 0.927')
+('Epoch 53/100 | Train Loss: 2.1798, Val Loss: 2.2582 | Probe Acc: 0.666 |Contrastive Acc val: 0.925', 'Contrastive Acc train: 0.935')
+('Epoch 54/100 | Train Loss: 2.1741, Val Loss: 2.2870 | Probe Acc: 0.666 |Contrastive Acc val: 0.921', 'Contrastive Acc train: 0.931')
+('Epoch 55/100 | Train Loss: 2.1730, Val Loss: 2.2815 | Probe Acc: 0.661 |Contrastive Acc val: 0.917', 'Contrastive Acc train: 0.927')
+('Epoch 56/100 | Train Loss: 2.1670, Val Loss: 2.2320 | Probe Acc: 0.676 |Contrastive Acc val: 0.929', 'Contrastive Acc train: 0.937')
+('Epoch 57/100 | Train Loss: 2.1561, Val Loss: 2.2653 | Probe Acc: 0.660 |Contrastive Acc val: 0.920', 'Contrastive Acc train: 0.939')
+('Epoch 58/100 | Train Loss: 2.1550, Val Loss: 2.2312 | Probe Acc: 0.677 |Contrastive Acc val: 0.924', 'Contrastive Acc train: 0.939')
+('Epoch 59/100 | Train Loss: 2.1492, Val Loss: 2.2523 | Probe Acc: 0.665 |Contrastive Acc val: 0.927', 'Contrastive Acc train: 0.940')
+('Epoch 60/100 | Train Loss: 2.1380, Val Loss: 2.2304 | Probe Acc: 0.679 |Contrastive Acc val: 0.934', 'Contrastive Acc train: 0.945')
+('Epoch 61/100 | Train Loss: 2.1283, Val Loss: 2.2056 | Probe Acc: 0.650 |Contrastive Acc val: 0.940', 'Contrastive Acc train: 0.947')
+('Epoch 62/100 | Train Loss: 2.1360, Val Loss: 2.2277 | Probe Acc: 0.675 |Contrastive Acc val: 0.934', 'Contrastive Acc train: 0.944')
+('Epoch 63/100 | Train Loss: 2.1198, Val Loss: 2.2220 | Probe Acc: 0.679 |Contrastive Acc val: 0.936', 'Contrastive Acc train: 0.949')
+('Epoch 64/100 | Train Loss: 2.1185, Val Loss: 2.2289 | Probe Acc: 0.661 |Contrastive Acc val: 0.939', 'Contrastive Acc train: 0.945')
+('Epoch 65/100 | Train Loss: 2.1159, Val Loss: 2.1958 | Probe Acc: 0.669 |Contrastive Acc val: 0.939', 'Contrastive Acc train: 0.948')
+('Epoch 66/100 | Train Loss: 2.1126, Val Loss: 2.2112 | Probe Acc: 0.694 |Contrastive Acc val: 0.941', 'Contrastive Acc train: 0.944')
+('Epoch 67/100 | Train Loss: 2.1024, Val Loss: 2.2112 | Probe Acc: 0.684 |Contrastive Acc val: 0.939', 'Contrastive Acc train: 0.949')
+('Epoch 68/100 | Train Loss: 2.1005, Val Loss: 2.2210 | Probe Acc: 0.694 |Contrastive Acc val: 0.931', 'Contrastive Acc train: 0.947')
+('Epoch 69/100 | Train Loss: 2.1054, Val Loss: 2.1941 | Probe Acc: 0.670 |Contrastive Acc val: 0.942', 'Contrastive Acc train: 0.954')
+('Epoch 70/100 | Train Loss: 2.0946, Val Loss: 2.2036 | Probe Acc: 0.679 |Contrastive Acc val: 0.937', 'Contrastive Acc train: 0.952')
+('Epoch 71/100 | Train Loss: 2.0862, Val Loss: 2.1954 | Probe Acc: 0.672 |Contrastive Acc val: 0.943', 'Contrastive Acc train: 0.957')
+('Epoch 72/100 | Train Loss: 2.0847, Val Loss: 2.2011 | Probe Acc: 0.677 |Contrastive Acc val: 0.942', 'Contrastive Acc train: 0.955')
+('Epoch 73/100 | Train Loss: 2.0857, Val Loss: 2.1740 | Probe Acc: 0.673 |Contrastive Acc val: 0.946', 'Contrastive Acc train: 0.956')
+('Epoch 74/100 | Train Loss: 2.0781, Val Loss: 2.1783 | Probe Acc: 0.672 |Contrastive Acc val: 0.950', 'Contrastive Acc train: 0.954')
+('Epoch 75/100 | Train Loss: 2.0744, Val Loss: 2.1753 | Probe Acc: 0.671 |Contrastive Acc val: 0.951', 'Contrastive Acc train: 0.959')
+('Epoch 76/100 | Train Loss: 2.0727, Val Loss: 2.1670 | Probe Acc: 0.687 |Contrastive Acc val: 0.947', 'Contrastive Acc train: 0.961')
+('Epoch 77/100 | Train Loss: 2.0594, Val Loss: 2.1707 | Probe Acc: 0.661 |Contrastive Acc val: 0.944', 'Contrastive Acc train: 0.957')
+('Epoch 78/100 | Train Loss: 2.0676, Val Loss: 2.1705 | Probe Acc: 0.676 |Contrastive Acc val: 0.952', 'Contrastive Acc train: 0.961')
+('Epoch 79/100 | Train Loss: 2.0555, Val Loss: 2.1802 | Probe Acc: 0.699 |Contrastive Acc val: 0.947', 'Contrastive Acc train: 0.958')
+('Epoch 80/100 | Train Loss: 2.0604, Val Loss: 2.1544 | Probe Acc: 0.665 |Contrastive Acc val: 0.949', 'Contrastive Acc train: 0.959')
+('Epoch 81/100 | Train Loss: 2.0534, Val Loss: 2.1570 | Probe Acc: 0.696 |Contrastive Acc val: 0.955', 'Contrastive Acc train: 0.964')
+('Epoch 82/100 | Train Loss: 2.0534, Val Loss: 2.1420 | Probe Acc: 0.705 |Contrastive Acc val: 0.954', 'Contrastive Acc train: 0.964')
+('Epoch 83/100 | Train Loss: 2.0448, Val Loss: 2.1525 | Probe Acc: 0.651 |Contrastive Acc val: 0.953', 'Contrastive Acc train: 0.962')
+('Epoch 84/100 | Train Loss: 2.0443, Val Loss: 2.1637 | Probe Acc: 0.672 |Contrastive Acc val: 0.960', 'Contrastive Acc train: 0.964')
+('Epoch 85/100 | Train Loss: 2.0366, Val Loss: 2.1567 | Probe Acc: 0.664 |Contrastive Acc val: 0.956', 'Contrastive Acc train: 0.964')
+('Epoch 86/100 | Train Loss: 2.0417, Val Loss: 2.1391 | Probe Acc: 0.688 |Contrastive Acc val: 0.951', 'Contrastive Acc train: 0.965')
+('Epoch 87/100 | Train Loss: 2.0409, Val Loss: 2.1458 | Probe Acc: 0.644 |Contrastive Acc val: 0.954', 'Contrastive Acc train: 0.966')
+('Epoch 88/100 | Train Loss: 2.0363, Val Loss: 2.1509 | Probe Acc: 0.670 |Contrastive Acc val: 0.947', 'Contrastive Acc train: 0.967')
+('Epoch 89/100 | Train Loss: 2.0298, Val Loss: 2.1346 | Probe Acc: 0.669 |Contrastive Acc val: 0.951', 'Contrastive Acc train: 0.965')
+('Epoch 90/100 | Train Loss: 2.0354, Val Loss: 2.1374 | Probe Acc: 0.664 |Contrastive Acc val: 0.958', 'Contrastive Acc train: 0.965')
+('Epoch 91/100 | Train Loss: 2.0338, Val Loss: 2.1457 | Probe Acc: 0.678 |Contrastive Acc val: 0.959', 'Contrastive Acc train: 0.967')
+('Epoch 92/100 | Train Loss: 2.0338, Val Loss: 2.1451 | Probe Acc: 0.687 |Contrastive Acc val: 0.959', 'Contrastive Acc train: 0.967')
+('Epoch 93/100 | Train Loss: 2.0276, Val Loss: 2.1401 | Probe Acc: 0.681 |Contrastive Acc val: 0.959', 'Contrastive Acc train: 0.968')
+('Epoch 94/100 | Train Loss: 2.0242, Val Loss: 2.1321 | Probe Acc: 0.672 |Contrastive Acc val: 0.957', 'Contrastive Acc train: 0.967')
+('Epoch 95/100 | Train Loss: 2.0281, Val Loss: 2.1264 | Probe Acc: 0.662 |Contrastive Acc val: 0.958', 'Contrastive Acc train: 0.970')
+('Epoch 96/100 | Train Loss: 2.0256, Val Loss: 2.1310 | Probe Acc: 0.661 |Contrastive Acc val: 0.950', 'Contrastive Acc train: 0.967')
+('Epoch 97/100 | Train Loss: 2.0256, Val Loss: 2.1287 | Probe Acc: 0.675 |Contrastive Acc val: 0.956', 'Contrastive Acc train: 0.968')
+('Epoch 98/100 | Train Loss: 2.0226, Val Loss: 2.1358 | Probe Acc: 0.685 |Contrastive Acc val: 0.954', 'Contrastive Acc train: 0.967')
+('Epoch 99/100 | Train Loss: 2.0298, Val Loss: 2.1361 | Probe Acc: 0.690 |Contrastive Acc val: 0.958', 'Contrastive Acc train: 0.968')
+('Epoch 100/100 | Train Loss: 2.0219, Val Loss: 2.1382 | Probe Acc: 0.709 |Contrastive Acc val: 0.952', 'Contrastive Acc train: 0.968')
+Final contrastive accuracy on val split: 96.04%
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:            contrastive_train_acc ▁▄▅▆▆▆▆▇▇▇▇▇▇▇▇█████████████████████████
+wandb:              contrastive_val_acc ▁▂▄▄▆▆▇▇▇▇▇▇▇█▇█████████████████████████
+wandb:                            epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▄▄▄▅▅▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇███
+wandb:       final_contrastive_accuracy ▁
+wandb: final_train_contrastive_accuracy ▁
+wandb:                 linear_probe_acc ▁▂▂▃▃▃▄▅▅▅▅▅▅▅▅▆▆▆▆▆▆▇▅▇▆▆▇▆▆▆▆█▅▆▆▇▆▆▆█
+wandb:                simclr_train_loss █▇▆▅▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                  simclr_val_loss █▆▅▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:            contrastive_train_acc 0.96756
+wandb:              contrastive_val_acc 0.95204
+wandb:                            epoch 100
+wandb:       final_contrastive_accuracy 0.96037
+wandb: final_train_contrastive_accuracy 0.96752
+wandb:                 linear_probe_acc 0.70889
+wandb:                simclr_train_loss 2.0219
+wandb:                  simclr_val_loss 2.13818
+wandb: 
+wandb: 🚀 View run BS256_LR4e-04_SEED42_TEMPERATURE0.2 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/jx9oyxau
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250620_141845-jx9oyxau/logs
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250620_193434-iua3jzkr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run linear_probe_seed42_temperature0.2_bs256
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/iua3jzkr
+Final contrastive accuracy on train split: 96.75%
+Model saved to models/simclr_model_seed42_temperature0.2_bs256.pth
+All runs completed.
+Using mean: [0.3441457152366638, 0.3800986111164093, 0.40766361355781555]
+Using std: [0.09299743920564651, 0.06464490294456482, 0.054139167070388794]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 94/11 batches
+Train + Val loader: 94 batches
+Starting linear probe training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+[Linear Probe] Epoch 1/20 - Loss: 1.8949, Accuracy: 48.83%
+[Linear Probe] Epoch 2/20 - Loss: 1.1215, Accuracy: 75.63%
+[Linear Probe] Epoch 3/20 - Loss: 1.0262, Accuracy: 76.50%
+[Linear Probe] Epoch 4/20 - Loss: 1.0063, Accuracy: 76.57%
+[Linear Probe] Epoch 5/20 - Loss: 0.9985, Accuracy: 76.92%
+[Linear Probe] Epoch 6/20 - Loss: 0.9954, Accuracy: 76.99%
+[Linear Probe] Epoch 7/20 - Loss: 0.9950, Accuracy: 76.96%
+[Linear Probe] Epoch 8/20 - Loss: 0.9936, Accuracy: 76.87%
+[Linear Probe] Epoch 9/20 - Loss: 0.9921, Accuracy: 76.97%
+[Linear Probe] Epoch 10/20 - Loss: 0.9906, Accuracy: 77.14%
+[Linear Probe] Epoch 11/20 - Loss: 0.9912, Accuracy: 77.26%
+[Linear Probe] Epoch 12/20 - Loss: 0.9901, Accuracy: 77.13%
+[Linear Probe] Epoch 13/20 - Loss: 0.9886, Accuracy: 77.44%
+[Linear Probe] Epoch 14/20 - Loss: 0.9876, Accuracy: 77.32%
+[Linear Probe] Epoch 15/20 - Loss: 0.9899, Accuracy: 77.39%
+[Linear Probe] Epoch 16/20 - Loss: 0.9877, Accuracy: 77.38%
+[Linear Probe] Epoch 17/20 - Loss: 0.9855, Accuracy: 77.62%
+[Linear Probe] Epoch 18/20 - Loss: 0.9854, Accuracy: 77.50%
+[Linear Probe] Epoch 19/20 - Loss: 0.9876, Accuracy: 77.43%
+[Linear Probe] Epoch 20/20 - Loss: 0.9847, Accuracy: 77.53%
+Test Accuracy: 76.11%
+Linear probe accuracy: 77.53%, Test accuracy: 76.11%
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlinear_probe_seed42_temperature0.2_bs256[0m at: [34mhttps://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/iua3jzkr[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250620_193434-iua3jzkr/logs[0m

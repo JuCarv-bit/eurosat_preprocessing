@@ -1,0 +1,148 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 3
+Torchvision version: 0.20.1
+Successfully set to use GPU: 1 (Quadro RTX 5000)
+Final DEVICE variable is set to: cuda:1
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 1
+Dummy tensor is on device: cuda:1
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Computed mean: [0.3441457152366638, 0.38009852170944214, 0.40766340494155884]
+Computed std:  [0.09299741685390472, 0.06464488059282303, 0.054139144718647]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 675/85/85 batches
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250625_145956-ta5wsbde
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS32_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS2
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/ta5wsbde
+Computed mean: [0.3441457152366638, 0.38009852170944214, 0.40766340494155884]
+Computed std:  [0.09299741685390472, 0.06464488059282303, 0.054139144718647]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 675/85/85 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 63.70%
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 71.13%
+Epoch 01/2 | Train Loss: 3.9978, Val Loss: 3.9526 | Logistic Probe Acc (Val): 0.637, Logistic Probe Acc (Train): 0.711 | Contrastive Acc (Train): 0.046, Contrastive Acc (Val): 0.046 | KNN Acc (Val): 0.577
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 64.41%
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[probe] val accuracy = 68.36%
+Epoch 02/2 | Train Loss: 3.7270, Val Loss: 3.5466 | Logistic Probe Acc (Val): 0.644, Logistic Probe Acc (Train): 0.684 | Contrastive Acc (Train): 0.082, Contrastive Acc (Val): 0.084 | KNN Acc (Val): 0.543
+Final contrastive accuracy on val split: 8.20%
+Final contrastive accuracy on train split: 8.30%
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:            contrastive_train_acc ▁█
+wandb:              contrastive_val_acc ▁█
+wandb:                            epoch ▁█
+wandb:       final_contrastive_accuracy ▁
+wandb: final_contrastive_accuracy_train ▁
+wandb:                    final_knn_acc ▁
+wandb:                      knn_val_acc █▁
+wandb:               logistic_probe_acc ▁█
+wandb:         logistic_probe_train_acc █▁
+wandb:                simclr_train_loss █▁
+wandb:                  simclr_val_loss █▁
+wandb: 
+wandb: Run summary:
+wandb:            contrastive_train_acc 0.08171
+wandb:              contrastive_val_acc 0.08444
+wandb:                            epoch 2
+wandb:       final_contrastive_accuracy 0.08204
+wandb: final_contrastive_accuracy_train 0.08303
+wandb:                    final_knn_acc 0.54296
+wandb:                      knn_val_acc 0.54296
+wandb:               logistic_probe_acc 0.64407
+wandb:         logistic_probe_train_acc 0.68361
+wandb:                simclr_train_loss 3.72697
+wandb:                  simclr_val_loss 3.54662
+wandb: 
+wandb: 🚀 View run BS32_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS2 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/ta5wsbde
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250625_145956-ta5wsbde/logs
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250625_151004-ji43zx49
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run logistic_probe_seed42_temperature0.2_bs32
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/ji43zx49
+Final kNN (k=5) on val: 54.30%
+Model saved to models/simclr_seed42_bs32_temp0.2_Tepochs2_lr0.000375.pth
+All runs completed.
+Using mean: [0.3441457152366638, 0.38009852170944214, 0.40766340494155884]
+Using std: [0.09299741685390472, 0.06464488059282303, 0.054139144718647]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 759/85 batches
+[Data] train+val loader has 759 batches
+Fitting logistic regression probe…
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[Probe] Train+Val Acc: 56.20%,  Test Acc: 61.52%
+Saved probe + encoder to models/logistic_probe_seed42_bs32.pkl
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlogistic_probe_seed42_temperature0.2_bs32[0m at: [34mhttps://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/ji43zx49[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250625_151004-ji43zx49/logs[0m

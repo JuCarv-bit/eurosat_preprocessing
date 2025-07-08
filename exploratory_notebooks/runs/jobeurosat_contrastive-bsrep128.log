@@ -1,0 +1,148 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.16
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 3
+Torchvision version: 0.20.1
+Successfully set to use GPU: 2 (Quadro RTX 5000)
+Final DEVICE variable is set to: cuda:2
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 2
+Dummy tensor is on device: cuda:2
+
+=== Starting run with seed 42 ===
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250618_202525-1qe2nshx
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS128_LR4e-04_SEED42_TEMPERATURE0.2
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/1qe2nshx
+Computed mean: [0.3441457748413086, 0.38009852170944214, 0.40766361355781555]
+Computed std:  [0.09299740195274353, 0.06464490294456482, 0.054139167070388794]
+Mean and std saved to models/mean_std.txt
+Train/Val/Test loaders: 168/22/22 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+Epoch 01/50 | Train Loss: 4.8057, Val Loss: 4.1494 | Probe Acc: 0.449
+Epoch 02/50 | Train Loss: 3.6207, Val Loss: 3.3610 | Probe Acc: 0.507
+Epoch 03/50 | Train Loss: 3.0203, Val Loss: 2.9241 | Probe Acc: 0.546
+Epoch 04/50 | Train Loss: 2.6901, Val Loss: 2.6589 | Probe Acc: 0.600
+Epoch 05/50 | Train Loss: 2.5065, Val Loss: 2.4608 | Probe Acc: 0.590
+Epoch 06/50 | Train Loss: 2.3711, Val Loss: 2.4109 | Probe Acc: 0.564
+Epoch 07/50 | Train Loss: 2.2869, Val Loss: 2.3023 | Probe Acc: 0.586
+Epoch 08/50 | Train Loss: 2.2071, Val Loss: 2.2332 | Probe Acc: 0.577
+Epoch 09/50 | Train Loss: 2.1418, Val Loss: 2.1813 | Probe Acc: 0.591
+Epoch 10/50 | Train Loss: 2.0884, Val Loss: 2.1194 | Probe Acc: 0.595
+Epoch 11/50 | Train Loss: 2.0385, Val Loss: 2.0628 | Probe Acc: 0.623
+Epoch 12/50 | Train Loss: 2.0028, Val Loss: 2.1039 | Probe Acc: 0.621
+Epoch 13/50 | Train Loss: 1.9721, Val Loss: 2.0259 | Probe Acc: 0.627
+Epoch 14/50 | Train Loss: 1.9452, Val Loss: 2.0087 | Probe Acc: 0.633
+Epoch 15/50 | Train Loss: 1.9140, Val Loss: 1.9914 | Probe Acc: 0.629
+Epoch 16/50 | Train Loss: 1.8900, Val Loss: 1.9448 | Probe Acc: 0.654
+Epoch 17/50 | Train Loss: 1.8700, Val Loss: 1.9406 | Probe Acc: 0.632
+Epoch 18/50 | Train Loss: 1.8435, Val Loss: 1.8919 | Probe Acc: 0.646
+Epoch 19/50 | Train Loss: 1.8261, Val Loss: 1.8949 | Probe Acc: 0.649
+Epoch 20/50 | Train Loss: 1.8166, Val Loss: 1.8956 | Probe Acc: 0.648
+Epoch 21/50 | Train Loss: 1.8029, Val Loss: 1.8737 | Probe Acc: 0.647
+Epoch 22/50 | Train Loss: 1.7778, Val Loss: 1.8614 | Probe Acc: 0.659
+Epoch 23/50 | Train Loss: 1.7716, Val Loss: 1.8373 | Probe Acc: 0.651
+Epoch 24/50 | Train Loss: 1.7530, Val Loss: 1.8512 | Probe Acc: 0.659
+Epoch 25/50 | Train Loss: 1.7324, Val Loss: 1.7960 | Probe Acc: 0.663
+Epoch 26/50 | Train Loss: 1.7260, Val Loss: 1.7902 | Probe Acc: 0.660
+Epoch 27/50 | Train Loss: 1.7118, Val Loss: 1.7694 | Probe Acc: 0.664
+Epoch 28/50 | Train Loss: 1.7011, Val Loss: 1.7988 | Probe Acc: 0.658
+Epoch 29/50 | Train Loss: 1.6836, Val Loss: 1.7759 | Probe Acc: 0.665
+Epoch 30/50 | Train Loss: 1.6792, Val Loss: 1.7535 | Probe Acc: 0.671
+Epoch 31/50 | Train Loss: 1.6632, Val Loss: 1.7515 | Probe Acc: 0.667
+Epoch 32/50 | Train Loss: 1.6538, Val Loss: 1.7385 | Probe Acc: 0.684
+Epoch 33/50 | Train Loss: 1.6481, Val Loss: 1.7325 | Probe Acc: 0.679
+Epoch 34/50 | Train Loss: 1.6341, Val Loss: 1.7105 | Probe Acc: 0.671
+Epoch 35/50 | Train Loss: 1.6277, Val Loss: 1.6985 | Probe Acc: 0.681
+Epoch 36/50 | Train Loss: 1.6185, Val Loss: 1.6871 | Probe Acc: 0.674
+Epoch 37/50 | Train Loss: 1.6093, Val Loss: 1.6788 | Probe Acc: 0.680
+Epoch 38/50 | Train Loss: 1.6024, Val Loss: 1.6697 | Probe Acc: 0.678
+Epoch 39/50 | Train Loss: 1.5876, Val Loss: 1.6918 | Probe Acc: 0.683
+Epoch 40/50 | Train Loss: 1.5862, Val Loss: 1.6786 | Probe Acc: 0.684
+Epoch 41/50 | Train Loss: 1.5709, Val Loss: 1.6545 | Probe Acc: 0.675
+Epoch 42/50 | Train Loss: 1.5678, Val Loss: 1.6551 | Probe Acc: 0.689
+Epoch 43/50 | Train Loss: 1.5707, Val Loss: 1.6615 | Probe Acc: 0.679
+Epoch 44/50 | Train Loss: 1.5577, Val Loss: 1.6443 | Probe Acc: 0.681
+Epoch 45/50 | Train Loss: 1.5514, Val Loss: 1.6337 | Probe Acc: 0.681
+Epoch 46/50 | Train Loss: 1.5562, Val Loss: 1.6340 | Probe Acc: 0.693
+Epoch 47/50 | Train Loss: 1.5536, Val Loss: 1.6296 | Probe Acc: 0.682
+Epoch 48/50 | Train Loss: 1.5446, Val Loss: 1.6308 | Probe Acc: 0.686
+Epoch 49/50 | Train Loss: 1.5507, Val Loss: 1.6300 | Probe Acc: 0.690
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:             epoch ▁▁▁▁▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇███
+wandb:  linear_probe_acc ▁▃▄▅▄▅▅▅▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇█▇█▇███▇███████
+wandb: simclr_train_loss █▅▄▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:   simclr_val_loss █▆▅▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:             epoch 50
+wandb:  linear_probe_acc 0.68778
+wandb: simclr_train_loss 1.54761
+wandb:   simclr_val_loss 1.64422
+wandb: 
+wandb: 🚀 View run BS128_LR4e-04_SEED42_TEMPERATURE0.2 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search/runs/1qe2nshx
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch-grid-search
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250618_202525-1qe2nshx/logs
+wandb: Tracking run with wandb version 0.19.11
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/wandb/run-20250618_222824-wtmjv2lx
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run linear_probe_seed42_temperature0.2_bs128
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/wtmjv2lx
+Epoch 50/50 | Train Loss: 1.5476, Val Loss: 1.6442 | Probe Acc: 0.688
+All runs completed.
+Using mean: [0.3441457748413086, 0.38009852170944214, 0.40766361355781555]
+Using std: [0.09299740195274353, 0.06464490294456482, 0.054139167070388794]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 189/22 batches
+Train + Val loader: 189 batches
+Starting linear probe training...
+/users/c/carvalhj/miniconda3/envs/myenv/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+[Linear Probe] Epoch 1/30 - Loss: 1.6355, Accuracy: 55.33%
+[Linear Probe] Epoch 2/30 - Loss: 0.9763, Accuracy: 73.60%
+[Linear Probe] Epoch 3/30 - Loss: 0.9502, Accuracy: 73.62%
+[Linear Probe] Epoch 4/30 - Loss: 0.9461, Accuracy: 73.76%
+[Linear Probe] Epoch 5/30 - Loss: 0.9496, Accuracy: 73.24%
+[Linear Probe] Epoch 6/30 - Loss: 0.9430, Accuracy: 73.78%
+[Linear Probe] Epoch 7/30 - Loss: 0.9440, Accuracy: 73.99%
+[Linear Probe] Epoch 8/30 - Loss: 0.9411, Accuracy: 73.96%
+[Linear Probe] Epoch 9/30 - Loss: 0.9408, Accuracy: 73.98%
+[Linear Probe] Epoch 10/30 - Loss: 0.9419, Accuracy: 74.07%
+[Linear Probe] Epoch 11/30 - Loss: 0.9425, Accuracy: 73.73%
+[Linear Probe] Epoch 12/30 - Loss: 0.9418, Accuracy: 73.91%
+[Linear Probe] Epoch 13/30 - Loss: 0.9384, Accuracy: 73.94%
+[Linear Probe] Epoch 14/30 - Loss: 0.9395, Accuracy: 74.03%
+[Linear Probe] Epoch 15/30 - Loss: 0.9386, Accuracy: 74.05%
+[Linear Probe] Epoch 16/30 - Loss: 0.9408, Accuracy: 74.06%
+[Linear Probe] Epoch 17/30 - Loss: 0.9404, Accuracy: 73.99%
+[Linear Probe] Epoch 18/30 - Loss: 0.9366, Accuracy: 74.61%
+[Linear Probe] Epoch 19/30 - Loss: 0.9352, Accuracy: 74.32%
+[Linear Probe] Epoch 20/30 - Loss: 0.9361, Accuracy: 74.50%
+[Linear Probe] Epoch 21/30 - Loss: 0.9337, Accuracy: 74.38%
+[Linear Probe] Epoch 22/30 - Loss: 0.9362, Accuracy: 74.16%
+[Linear Probe] Epoch 23/30 - Loss: 0.9325, Accuracy: 74.63%
+[Linear Probe] Epoch 24/30 - Loss: 0.9318, Accuracy: 74.44%
+[Linear Probe] Epoch 25/30 - Loss: 0.9332, Accuracy: 74.49%
+[Linear Probe] Epoch 26/30 - Loss: 0.9334, Accuracy: 74.54%
+[Linear Probe] Epoch 27/30 - Loss: 0.9332, Accuracy: 74.67%
+[Linear Probe] Epoch 28/30 - Loss: 0.9323, Accuracy: 74.55%
+[Linear Probe] Epoch 29/30 - Loss: 0.9317, Accuracy: 74.55%
+[Linear Probe] Epoch 30/30 - Loss: 0.9306, Accuracy: 74.77%
+Test Accuracy: 74.26%
+Linear probe accuracy: 74.77%, Test accuracy: 74.26%
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlinear_probe_seed42_temperature0.2_bs128[0m at: [34mhttps://wandb.ai/analiju-paris/linear_probe_eurosat-simclr/runs/wtmjv2lx[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250618_222824-wtmjv2lx/logs[0m
