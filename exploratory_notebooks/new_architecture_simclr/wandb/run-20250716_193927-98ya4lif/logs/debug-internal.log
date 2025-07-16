@@ -1,0 +1,7 @@
+{"time":"2025-07-16T19:39:27.472934203+02:00","level":"INFO","msg":"stream: starting","core version":"0.20.1","symlink path":"/users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/new_architecture_simclr/wandb/run-20250716_193927-98ya4lif/logs/debug-core.log"}
+{"time":"2025-07-16T19:39:27.715953139+02:00","level":"INFO","msg":"stream: created new stream","id":"98ya4lif"}
+{"time":"2025-07-16T19:39:27.715981688+02:00","level":"INFO","msg":"stream: started","id":"98ya4lif"}
+{"time":"2025-07-16T19:39:27.716012278+02:00","level":"INFO","msg":"handler: started","stream_id":"98ya4lif"}
+{"time":"2025-07-16T19:39:27.716044432+02:00","level":"INFO","msg":"sender: started","stream_id":"98ya4lif"}
+{"time":"2025-07-16T19:39:27.716013695+02:00","level":"INFO","msg":"writer: Do: started","stream_id":"98ya4lif"}
+{"time":"2025-07-16T19:39:28.013554104+02:00","level":"INFO","msg":"Starting system monitor"}
