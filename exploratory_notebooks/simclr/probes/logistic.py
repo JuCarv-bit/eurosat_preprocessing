@@ -5,7 +5,9 @@ import torch
 
 import wandb
 import joblib
-from utils.version_utils import print_versions, configure_gpu_device, set_seed
+from utils.version_utils import print_versions, configure_gpu_device
+from transfer.logistic_regrssion import  SklearnLogisticProbe
+
 
 
 def get_probe_loaders(train_loader, val_loader, eval_transform, probe_batch_size):

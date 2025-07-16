@@ -15,7 +15,6 @@ import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
-from torchvision.models import resnet50
 from PIL import Image
 from sklearn.model_selection import StratifiedShuffleSplit
 from torch.optim.lr_scheduler import LinearLR, CosineAnnealingLR, SequentialLR

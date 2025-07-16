@@ -7,7 +7,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import transforms, datasets, models
 from torch.utils.data import DataLoader, random_split, Dataset, Subset
-from torchvision.models import resnet50
 from PIL import Image
 import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
