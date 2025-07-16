@@ -6,3 +6,5 @@ exploratory_notebooks/best_model.pt
 exploratory_notebooks/utils/__pycache__/
 .env
 *.pyc
+exploratory_notebooks/new_architecture_simclr/models/*
+exploratory_notebooks/new_architecture_simclr/wandb/*
