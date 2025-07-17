@@ -198,6 +198,17 @@ def train_simclr(model,
         wandb_run.log({"final_contrastive_accuracy": final_contrast_acc})
         wandb_run.log({"final_contrastive_accuracy_train": final_contrast_acc_train})
     
+    knn = WeightedKNNClassifier(
+                model=model,
+                device=device,
+                k=CONFIG["K"],             
+                normalize=True
+            )
+    
+    knn.fit(probe_train_loader)
+    knn_train_acc = knn.score(probe_train_loader)
+    print(f"Final kNN (k={knn.k}) on train: {knn_train_acc*100:.2f}%")
+    
     final_knn_acc = knn.score(probe_val_loader)
     print(f"Final kNN (k={knn.k}) on val: {final_knn_acc*100:.2f}%")
 
