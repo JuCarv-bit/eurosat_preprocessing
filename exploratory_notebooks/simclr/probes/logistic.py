@@ -8,20 +8,37 @@ import joblib
 from utils.version_utils import print_versions, configure_gpu_device
 from transfer.logistic_regrssion import  SklearnLogisticProbe
 
+from torch.utils.data import DataLoader, Dataset
 
 
-def get_probe_loaders(train_loader, val_loader, eval_transform, probe_batch_size):
 
+def get_probe_loaders(train_loader, val_loader, eval_transform, probe_batch_size, yaware=False):
     NUM_WORKERS = CONFIG["NUM_WORKERS"]
+    SEED        = CONFIG["SEED"]
 
-    simclr_ds   = train_loader.dataset         # SimCLRDataset instance
-    raw_subset  = simclr_ds.dataset            # e.g. Subset(ImageFolder, train_indices)
+    simclr_ds  = train_loader.dataset                 # either SimCLRDataset or SimCLRWithMetaDataset
+    raw_subset = getattr(simclr_ds, "dataset", simclr_ds)  # Subset(...) pointing at base Dataset
 
-    # labeled Dataset for probe‐training
-    probe_train_ds = LabeledEvalDataset(raw_subset, eval_transform)
+    class DropMetaDataset(Dataset):
+        def __init__(self, ds):
+            self.ds = ds
+        def __len__(self):
+            return len(self.ds)
+        def __getitem__(self, idx):
+            item = self.ds[idx]
+            # old behaviour: (img, label)
+            if len(item) == 2:
+                img, label = item
+            # new behaviour: (img, meta, label)
+            elif len(item) == 3:
+                img, _meta, label = item
+            else:
+                raise RuntimeError(f"Expected 2‑ or 3‑tuple, got {len(item)} elements")
+            return img, label
 
-    SEED = CONFIG["SEED"]
+    probe_raw_ds = DropMetaDataset(raw_subset) if yaware else raw_subset
 
+    probe_train_ds = LabeledEvalDataset(probe_raw_ds, eval_transform)
     probe_train_loader = DataLoader(
         probe_train_ds,
         batch_size=probe_batch_size,
@@ -31,11 +48,20 @@ def get_probe_loaders(train_loader, val_loader, eval_transform, probe_batch_size
         generator=torch.Generator().manual_seed(SEED)
     )
 
-    # use existing val_loader as the probe‐validation loader
-    probe_val_loader = val_loader
+    if yaware:
+        val_raw_ds = val_loader.dataset  # Subset(EuroSATDataset)
+        val_for_probe = DropMetaDataset(val_raw_ds)
+        probe_val_loader = DataLoader(
+            val_for_probe,
+            batch_size=getattr(val_loader, "batch_size", probe_batch_size),
+            shuffle=False,
+            num_workers=NUM_WORKERS,
+            generator=torch.Generator().manual_seed(SEED)
+        )
+    else:
+        probe_val_loader = val_loader
 
     return probe_train_loader, probe_val_loader
-
 
 
 

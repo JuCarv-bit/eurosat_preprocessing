@@ -21,12 +21,14 @@ class SklearnLogisticProbe:
         encoder: torch.nn.Module,
         device: torch.device,
         scale_features: Literal["standard", None] = "standard",
+        yaware: bool = False,
         **kwargs: Any
     ):
         self.encoder = encoder.eval().to(device)
         self.device = device
         self.clf = LogisticRegression(**kwargs)
         self.scaler = StandardScaler() if scale_features == "standard" else None
+        self.yaware = yaware
 
     def _extract(self, loader: torch.utils.data.DataLoader):
         feats, labs = [], []
@@ -81,6 +83,7 @@ def run_logistic_probe(
     C=1.0,
     max_iter=200,
     scale_features="standard",
+    yaware=False
 ):
     """
     1) Wraps encoder in SklearnLogisticProbe
@@ -97,7 +100,8 @@ def run_logistic_probe(
         C=C,
         max_iter=max_iter,
         multi_class="multinomial",
-        solver="lbfgs"
+        solver="lbfgs",
+        yaware=yaware
     )
 
     # Fit

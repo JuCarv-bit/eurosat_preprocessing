@@ -9,6 +9,11 @@ import os
 import wandb
 from simclr.models.loss import NTXentLoss, compute_contrastive_accuracy
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
+from information_extraction import SimCLRWithMetaDataset
+
+INTERVAL_EPOCHS_LINEAR_PROBE = 20
+INTERVAL_EPOCHS_KNN = 10
+INTERVAL_CONTRASTIVE_ACC = 10
 
 def train_simclr(model,
                  train_loader,        # yields (x1, x2)
@@ -27,7 +32,8 @@ def train_simclr(model,
                  val_subset_no_transform,   # always PIL, TwoCrops works
                  wandb_run=None,
                  scheduler=None,
-                 seed=CONFIG["SEED"]):
+                 seed=CONFIG["SEED"],
+                 yaware=False):
     model.to(device)
 
     EPOCH_SAVE_INTERVAL = CONFIG["EPOCH_SAVE_INTERVAL"]
@@ -40,7 +46,11 @@ def train_simclr(model,
 
     two_crop = TwoCropsTransform(augment_transform)
     raw_val_subset = val_subset_no_transform 
-    contrastive_val_ds = SimCLRDataset(raw_val_subset, two_crop)
+    if yaware:
+        contrastive_val_ds = SimCLRWithMetaDataset(raw_val_subset, two_crop)
+    else:    
+        contrastive_val_ds = SimCLRDataset(raw_val_subset, two_crop)
+
     contrastive_val_loader = torch.utils.data.DataLoader(
         contrastive_val_ds,
         batch_size=val_loader.batch_size,
@@ -48,14 +58,22 @@ def train_simclr(model,
         num_workers=val_loader.num_workers,
         pin_memory=True
     )
-
-    # model.train()
+    contrast_acc = 0.0
+    contrastive_acc_train = 0.0
+    logistic_accuracy = 0.0
+    logistic_accuracy_train = 0.0
+    knn_acc = 0.0
+    knn_train_acc = 0.0
 
     for epoch in range(1, simclr_epochs+1):
         # contrastive training
         model.train()
         total_loss = 0.0
-        for x1, x2 in train_loader:
+        for sample_train in train_loader:
+            if yaware:
+                x1, x2, meta = sample_train
+            else:
+                x1, x2 = sample_train
             x1, x2 = x1.to(device), x2.to(device)
             _, z1 = model(x1)
             _, z2 = model(x2)
@@ -71,7 +89,11 @@ def train_simclr(model,
         model.eval()
         val_loss = 0.0
         with torch.no_grad():
-            for v1, v2 in contrastive_val_loader:
+            for v in contrastive_val_loader:
+                if yaware:
+                    v1, v2, meta = v
+                else:
+                    v1, v2 = v
                 v1, v2 = v1.to(device), v2.to(device)
                 _, zv1 = model(v1)
                 _, zv2 = model(v2)
@@ -79,55 +101,63 @@ def train_simclr(model,
                 val_loss += l.item() * v1.size(0)
         val_loss /= len(contrastive_val_loader.dataset)
 
-        contrast_acc = compute_contrastive_accuracy(
-            model, contrastive_val_loader, device
-        )
+        if epoch % INTERVAL_CONTRASTIVE_ACC == 0:
+            contrast_acc = compute_contrastive_accuracy(
+                model, contrastive_val_loader, device, yaware=yaware
+            )
 
-        contrastive_acc_train = compute_contrastive_accuracy(
-            model, train_loader, device
-        )
+            contrastive_acc_train = compute_contrastive_accuracy(
+                model, train_loader, device, yaware=yaware
+            )
 
-        logistic_accuracy = run_logistic_probe(
-            model,
-            probe_train_loader,
-            probe_val_loader,
-            feature_dim,       # e.g. 512
-            num_classes,       # e.g. 10
-            device,
-            C=0.1,             # stronger L2
-            max_iter=200,      # increase if not converging
-            scale_features="standard"
-        )
 
-        logistic_accuracy_train = run_logistic_probe(
-            model,
-            probe_train_loader,
-            probe_train_loader,  # use train loader for training
-            feature_dim,          # e.g. 512
-            num_classes,          # e.g. 10
-            device,
-            C=0.1,                # stronger L2
-            max_iter=200,         # increase if not converging
-            scale_features="standard"
-        )
+        if epoch % INTERVAL_EPOCHS_LINEAR_PROBE == 0:
 
-        # fit on probe_train_loader, eval on probe_val_loader
-        knn = WeightedKNNClassifier(
-            model=model,
-            device=device,
-            k=CONFIG["K"],             
-            normalize=True
-        )
-        knn.fit(probe_train_loader)
-        knn_acc = knn.score(probe_val_loader)
-        # knn_train_acc = knn.score(probe_train_loader)
+            logistic_accuracy = run_logistic_probe(
+                model,
+                probe_train_loader,
+                probe_val_loader,
+                feature_dim,       # e.g. 512
+                num_classes,       # e.g. 10
+                device,
+                C=0.1,             # stronger L2
+                max_iter=200,      # increase if not converging
+                scale_features="standard",
+                yaware=yaware
+            )
+
+            logistic_accuracy_train = run_logistic_probe(
+                model,
+                probe_train_loader,
+                probe_train_loader,  # use train loader for training
+                feature_dim,          # e.g. 512
+                num_classes,          # e.g. 10
+                device,
+                C=0.1,                # stronger L2
+                max_iter=200,         # increase if not converging
+                scale_features="standard",
+                yaware=yaware
+            )
+        
+        if epoch % INTERVAL_EPOCHS_KNN == 0:
+            # fit on probe_train_loader, eval on probe_val_loader
+            knn = WeightedKNNClassifier(
+                model=model,
+                device=device,
+                k=CONFIG["K"],             
+                normalize=True
+            )
+            knn.fit(probe_train_loader)
+            knn_acc = knn.score(probe_val_loader)
+            # knn_train_acc = knn.score(probe_train_loader)
 
         msg = (f"Epoch {epoch:02d}/{simclr_epochs} | "
                f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f} | "
                 f"Logistic Probe Acc (Val): {logistic_accuracy:.3f}, Logistic Probe Acc (Train): {logistic_accuracy_train:.3f} | "
                f"Contrastive Acc (Train): {contrastive_acc_train:.3f}, Contrastive Acc (Val): {contrast_acc:.3f}"
                f" | KNN Acc (Val): {knn_acc:.3f}")
-        print(msg)
+        if epoch % INTERVAL_EPOCHS_LINEAR_PROBE == 0:
+            print(msg)
         if wandb_run:
             wandb_run.log({
                 "epoch": epoch,
@@ -156,10 +186,10 @@ def train_simclr(model,
 
 
     final_contrast_acc = compute_contrastive_accuracy(
-        model, contrastive_val_loader, device
+        model, contrastive_val_loader, device, yaware=yaware
     )
     final_contrast_acc_train = compute_contrastive_accuracy(
-        model, train_loader, device
+        model, train_loader, device, yaware=yaware
     )
     print(f"Final contrastive accuracy on val split: {final_contrast_acc*100:.2f}%")
     print(f"Final contrastive accuracy on train split: {final_contrast_acc_train*100:.2f}%")

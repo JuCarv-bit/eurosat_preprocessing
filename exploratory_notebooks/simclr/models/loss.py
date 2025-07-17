@@ -41,7 +41,7 @@ def compute_contrastive_val_loss(model, val_loader, criterion,
     
 
 @torch.no_grad()
-def compute_contrastive_accuracy(model, loader, device):
+def compute_contrastive_accuracy(model, loader, device, yaware=False):
     """
     Returns fraction of times the positive pair is the nearest neighbor
     across the batch of size 2N.
@@ -49,7 +49,11 @@ def compute_contrastive_accuracy(model, loader, device):
     model.eval()
     correct, total = 0, 0
 
-    for x1, x2 in loader:
+    for sample in loader:
+        if yaware:
+            x1, x2, meta = sample
+        else:
+            x1, x2 = sample
         x1, x2 = x1.to(device), x2.to(device)
         _, z1 = model(x1)   # proj head output
         _, z2 = model(x2)

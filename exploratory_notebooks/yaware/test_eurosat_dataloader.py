@@ -33,7 +33,8 @@ def test_dataset_getitem():
 
 def test_get_data_loaders():
     loaders = get_data_loaders(MS_PATH, RGB_PATH, batch_size=BATCH_SIZE)
-    train_loader, val_loader, test_loader, _, num_classes = loaders
+    train_loader, val_loader, test_loader, val_no_transform_ds, num_classes = loaders
+    
     train_data = next(iter(train_loader))
     imgs, imgs_2, metas = train_data # train is just simclr augmentation + metadata
     test_data = next(iter(test_loader))
