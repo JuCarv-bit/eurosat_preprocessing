@@ -2,6 +2,7 @@ CONFIG = {
     "LOCAL_OR_COLAB": "LOCAL",
     "DATA_DIR_LOCAL": "/share/DEEPLEARNING/carvalhj/EuroSAT_RGB/",
     "DATA_DIR_COLAB": "/content/EuroSAT_RGB",
+    "DATA_DIR_EUROSAT_MS": "/share/DEEPLEARNING/carvalhj/EuroSAT_MS/",
     "ZIP_PATH": "/content/EuroSAT.zip",
     "EUROSAT_URL": "https://madm.dfki.de/files/sentinel/EuroSAT.zip",
     "SEED": 42,  

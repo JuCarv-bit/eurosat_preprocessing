@@ -56,23 +56,29 @@ def prepare_data():
     return CONFIG["DATA_DIR_COLAB"]
 
 
-def compute_mean_std(dataset, batch_size):
+def compute_mean_std(dataset, batch_size, yaware=False):
     SEED = CONFIG["SEED"]
     loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=CONFIG["NUM_WORKERS"], generator=torch.Generator().manual_seed(SEED))
     mean = 0.0
     std = 0.0
     n_samples = 0
+    
+    with torch.no_grad():
+        for sample_loader in loader:
+            if yaware:
+                data, _, _ = sample_loader
+            else:
+                data, _ = sample_loader
 
-    for data, _ in loader:
-        batch_samples = data.size(0)
-        data = data.view(batch_samples, data.size(1), -1)  # (B, C, H*W)
-        mean += data.mean(2).sum(0)
-        std += data.std(2).sum(0)
-        n_samples += batch_samples
+            batch_samples = data.size(0)
+            data = data.view(batch_samples, data.size(1), -1)  # (B, C, H*W)
+            mean += data.mean(2).sum(0)
+            std += data.std(2).sum(0)
+            n_samples += batch_samples
 
-    mean /= n_samples
-    std /= n_samples
-    return mean.tolist(), std.tolist()
+        mean /= n_samples
+        std /= n_samples
+        return mean.tolist(), std.tolist()
 
 def combine_train_val_loaders(train_loader, val_loader):
     train_ds = train_loader.dataset
