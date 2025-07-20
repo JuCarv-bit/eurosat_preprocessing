@@ -10,7 +10,7 @@ CONFIG = {
     "LR": 3.75e-4,
     "WD": 0.5,
     "LR_LINEAR": 3.75e-4,
-    "EPOCHS_SIMCLR": 60,
+    "EPOCHS_SIMCLR": 200,
     "EPOCHS_LINEAR": 20,
     "TEMPERATURE": 0.2,
     "PROJ_DIM": 64,
@@ -24,5 +24,5 @@ CONFIG = {
     "VAL_FRAC": 0.1,    
     "TEST_FRAC": 0.1,
     "EUROSAT_IMAGE_SIZE": (64, 64),
-    "TARGET_GPU_INDEX": 0, 
+    "TARGET_GPU_INDEX": 1, 
 }

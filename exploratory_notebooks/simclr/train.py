@@ -10,10 +10,11 @@ import wandb
 from simclr.models.loss import NTXentLoss, compute_contrastive_accuracy
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
 from information_extraction import SimCLRWithMetaDataset
+import time
 
 INTERVAL_EPOCHS_LINEAR_PROBE = 20
-INTERVAL_EPOCHS_KNN = 10
-INTERVAL_CONTRASTIVE_ACC = 10
+INTERVAL_EPOCHS_KNN = 20
+INTERVAL_CONTRASTIVE_ACC = 5
 
 def train_simclr(model,
                  train_loader,        # yields (x1, x2)
@@ -35,6 +36,12 @@ def train_simclr(model,
                  seed=CONFIG["SEED"],
                  yaware=False):
     model.to(device)
+
+    # create a YYYY-MM-DD_HH-MM-SS directory for saving models
+    dirname = time.strftime("%Y-%m-%d_%H-%M-%S")
+    full_model_path = os.path.join("models", dirname)
+    if not os.path.exists(full_model_path):
+        os.makedirs(full_model_path)
 
     EPOCH_SAVE_INTERVAL = CONFIG["EPOCH_SAVE_INTERVAL"]
     TEMPERATURE = CONFIG["TEMPERATURE"]
@@ -186,7 +193,8 @@ def train_simclr(model,
 
  
         if epoch % EPOCH_SAVE_INTERVAL  == 0:
-            checkpoint_path = os.path.join("models", f"{model_base_filename}_epoch_{epoch:03d}.pth")
+
+            checkpoint_path = os.path.join(full_model_path, f"{model_base_filename}_epoch_{epoch:03d}.pth")
             torch.save(model.state_dict(), checkpoint_path)
 
     seed = CONFIG["SEED"]
@@ -226,10 +234,21 @@ def train_simclr(model,
     final_knn_acc = knn.score(probe_val_loader)
     print(f"Final kNN (k={knn.k}) on val: {final_knn_acc*100:.2f}%")
 
+    # Compute knn with k=1 too
+    knn.k = 1
+    knn.fit(probe_train_loader)
+    knn_train_acc_k1 = knn.score(probe_train_loader)
+    print(f"Final kNN (k=1) on train: {knn_train_acc_k1*100:.2f}%")
+    
+    final_knn_acc_k1 = knn.score(probe_val_loader)
+    print(f"Final kNN (k=1) on val: {final_knn_acc_k1*100:.2f}%")
+
     if wandb_run:
         wandb_run.log({"final_knn_acc": final_knn_acc})
-
-    
+        wandb_run.log({"final_knn_acc_k1": final_knn_acc_k1})
+    if wandb_run:
+        wandb_run.log({"final_knn_train_acc": knn_train_acc})
+        wandb_run.log({"final_knn_train_acc_k1": knn_train_acc_k1})
     torch.save(model.state_dict(), model_path)
     print(f"Model saved to {model_path}")
 
