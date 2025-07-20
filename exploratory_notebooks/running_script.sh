@@ -1,5 +1,8 @@
 #!/bin/bash
-tmux new-session -As jobeurosatcontrastive-aug-reploss-2-bs256_ep60-lrg-remov-gausblur
-cd /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks
-conda activate myenv &&  jupyter nbconvert --to script eurosat_contrastive.ipynb --output eurosat_contrastive-bs256_ep60-lrg-remov-gausblur
-python eurosat_contrastive-bs256_ep60-lrg-remov-gausblur.py > runs/jobeurosat_contrastive-bs256_ep60-lrg-remov-gausblur.log 2>&1
+tmux new-session -As jobeurosatcontrastive-yaware_v1
+# cd /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks
+cd  exploratory_notebooks/yaware
+conda activate yaware_eurosat 
+jupyter nbconvert --to script yaware_newarchsimclr.ipynb --output eurosat_contrastiveyaware_v1
+mkdir -p runs
+python eurosat_contrastiveyaware_v1.py > runs/jobeurosat_contrastiveyaware_v1.log 2>&1

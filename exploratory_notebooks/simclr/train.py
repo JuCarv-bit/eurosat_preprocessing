@@ -77,7 +77,15 @@ def train_simclr(model,
             x1, x2 = x1.to(device), x2.to(device)
             _, z1 = model(x1)
             _, z2 = model(x2)
-            loss = criterion(z1, z2)
+            if yaware:
+                res = criterion(z1, z2, meta)
+                # if the loss fn returned a tuple, grab the first element
+                if isinstance(res, tuple):
+                    loss = res[0]
+                else:
+                    loss = res
+            else:
+                loss = criterion(z1, z2)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -94,10 +102,16 @@ def train_simclr(model,
                     v1, v2, meta = v
                 else:
                     v1, v2 = v
+                
                 v1, v2 = v1.to(device), v2.to(device)
                 _, zv1 = model(v1)
                 _, zv2 = model(v2)
-                l = criterion(zv1, zv2)
+                # l = criterion(zv1, zv2)
+                if yaware:
+                    res = criterion(zv1, zv2, meta)
+                    l   = res[0] if isinstance(res, tuple) else res
+                else:
+                    l   = criterion(zv1, zv2)
                 val_loss += l.item() * v1.size(0)
         val_loss /= len(contrastive_val_loader.dataset)
 
