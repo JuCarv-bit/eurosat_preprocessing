@@ -1,0 +1,105 @@
+wandb: Currently logged in as: analiju (analiju-paris) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Conda version: 25.5.1
+Python version: 3.10.13
+PyTorch version: 2.5.1
+CUDA available: True
+CUDA device count: 2
+Torchvision version: 0.20.1
+Successfully set to use GPU: 0 (NVIDIA RTX A6000)
+Final DEVICE variable is set to: cuda:0
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 0
+Dummy tensor is on device: cuda:0
+
+=== Starting run with seed 42 ===
+Batchsize= 256
+Loading metadata from cache (eurosat_metadata_cache.pkl)
+Stratified split sizes: train=21600, val=2700, test=2700
+Loaders: train=84, val=11, test=11 batches
+wandb: Tracking run with wandb version 0.21.0
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/yaware/wandb/run-20250718_030146-tvl91nrn
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS2
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/tvl91nrn
+Image shape: torch.Size([256, 3, 64, 64]), Meta shape: torch.Size([256, 2]), torch.Size([256, 3, 64, 64])
+<information_extraction.SimCLRWithMetaDataset object at 0x7f613a803cd0>
+
+=== Starting run with seed 42 ===
+Stratified split sizes: train=21600, val=2700, test=2700
+Loaders: train=84, val=11, test=11 batches
+Starting SimCLR training...
+/users/c/carvalhj/miniconda3/envs/yaware_eurosat/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:240: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+Final contrastive accuracy on val split: 2.61%
+Final contrastive accuracy on train split: 3.11%
+Final kNN (k=5) on train: 100.00%
+wandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:            contrastive_train_acc ▁▁
+wandb:              contrastive_val_acc ▁▁
+wandb:                            epoch ▁█
+wandb:       final_contrastive_accuracy ▁
+wandb: final_contrastive_accuracy_train ▁
+wandb:                    final_knn_acc ▁
+wandb:                      knn_val_acc ▁▁
+wandb:               logistic_probe_acc ▁▁
+wandb:         logistic_probe_train_acc ▁▁
+wandb:                simclr_train_loss █▁
+wandb:                  simclr_val_loss █▁
+wandb: 
+wandb: Run summary:
+wandb:            contrastive_train_acc 0
+wandb:              contrastive_val_acc 0
+wandb:                            epoch 2
+wandb:       final_contrastive_accuracy 0.02611
+wandb: final_contrastive_accuracy_train 0.03109
+wandb:                    final_knn_acc 0.73704
+wandb:                      knn_val_acc 0
+wandb:               logistic_probe_acc 0
+wandb:         logistic_probe_train_acc 0
+wandb:                simclr_train_loss 5.82803
+wandb:                  simclr_val_loss 5.76942
+wandb: 
+wandb: 🚀 View run BS256_LR4e-04_SEED42_TEMPERATURE0.2_EPOCHS2 at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch/runs/tvl91nrn
+wandb: ⭐️ View project at: https://wandb.ai/analiju-paris/eurosat-contrastive-scratch
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20250718_030146-tvl91nrn/logs
+wandb: Tracking run with wandb version 0.21.0
+wandb: Run data is saved locally in /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/yaware/wandb/run-20250718_030923-m93jfy0y
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run logistic_probe_seed42_temperature0.2_bs256
+wandb: ⭐️ View project at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr
+wandb: 🚀 View run at https://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/m93jfy0y
+Final kNN (k=5) on val: 73.70%
+Model saved to models/simclr_seed42_bs256_temp0.2_Tepochs2_lr0.000375.pth
+All runs completed.
+Using mean: [0.34493255615234375, 0.38065004348754883, 0.4079166650772095]
+Using std: [0.09294305741786957, 0.06471628695726395, 0.05417811498045921]
+Total samples in folder: 27000, classes: ['AnnualCrop', 'Forest', 'HerbaceousVegetation', 'Highway', 'Industrial', 'Pasture', 'PermanentCrop', 'Residential', 'River', 'SeaLake']
+Stratified split sizes: train=21600, val=2700, test=2700
+Train/Test loaders: 94/11 batches
+Successfully set to use GPU: 0 (NVIDIA RTX A6000)
+Final DEVICE variable is set to: cuda:0
+Current PyTorch default device: 0
+Current PyTorch default device (after set_device): 0
+Dummy tensor is on device: cuda:0
+[Data] train+val loader has 94 batches
+Fitting logistic regression probe…
+/users/c/carvalhj/miniconda3/envs/yaware_eurosat/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1264: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/users/c/carvalhj/miniconda3/envs/yaware_eurosat/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:470: ConvergenceWarning: lbfgs failed to converge after 500 iteration(s) (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT
+
+Increase the number of iterations to improve the convergence (max_iter=500).
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+[Probe] Train+Val Acc: 67.15%,  Test Acc: 71.78%
+Saved probe + encoder to models/logistic_probe_seed42_bs256.pkl
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mlogistic_probe_seed42_temperature0.2_bs256[0m at: [34mhttps://wandb.ai/analiju-paris/logistic_probe_eurosat-simclr/runs/m93jfy0y[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250718_030923-m93jfy0y/logs[0m
