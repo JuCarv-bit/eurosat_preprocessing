@@ -1,0 +1,4 @@
+conda activate yaware_eurosat
+cd exploratory_notebooks
+pip uninstall eurosat_project 
+python -m pip install -e .

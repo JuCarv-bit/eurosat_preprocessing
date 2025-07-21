@@ -15,3 +15,5 @@ exploratory_notebooks/yaware/wandb/*
 exploratory_notebooks/eurosat_project.egg-info/*
 .vscode/settings.json
 exploratory_notebooks/yaware/models/*
+exploratory_notebooks/build/*
+exploratory_notebooks/dist/*
