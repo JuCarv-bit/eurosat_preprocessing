@@ -1,5 +1,6 @@
 CONFIG = {
     "Y_AWARE": True,
+    "ORIGINAL_Y_AWARE": True,  # If True, use the original y-aware loss function
     "LOCAL_OR_COLAB": "LOCAL",
     "DATA_DIR_LOCAL": "/share/DEEPLEARNING/carvalhj/EuroSAT_RGB/",
     "DATA_DIR_COLAB": "/content/EuroSAT_RGB",

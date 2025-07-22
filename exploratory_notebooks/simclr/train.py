@@ -24,7 +24,7 @@ def train_simclr(model,
                  probe_train_loader,  # labeled loader for probe head train
                  probe_val_loader,    # labeled loader for probe head val
                  optimizer,
-                 criterion,
+                 loss_fn,
                  device,
                  simclr_epochs,
                  probe_lr,
@@ -37,6 +37,7 @@ def train_simclr(model,
                  scheduler=None,
                  seed=CONFIG["SEED"],
                  yaware=False):
+    
     model.to(device)
     model.train()
     print("Measuring time...")
@@ -88,6 +89,8 @@ def train_simclr(model,
     knn_acc = 0.0
     knn_train_acc = 0.0
 
+    original_yaware = CONFIG["ORIGINAL_Y_AWARE"]
+
     # for epoch in range(1, simclr_epochs+1):
     for epoch in trange(1, simclr_epochs + 1, desc="Epochs"):
         epoch_start = time.perf_counter()
@@ -113,14 +116,19 @@ def train_simclr(model,
             t2 = time.perf_counter()
             timings['forward'] += (t2 - t1)
             if yaware:
-                res = criterion(z1, z2, meta)
+                # meta is  tensor([[ 48.4232,   7.7490], ...]) # e.g. [latitude, longitude]
+                if original_yaware:
+                    meta_second = meta[:, 1]  # e.g. [7.7490, 7.7490, ...] longitude
+                    res = loss_fn(z1, z2, meta_second)
+                else:
+                    res = loss_fn(z1, z2, meta)
                 # if the loss fn returned a tuple, grab the first element
                 if isinstance(res, tuple):
                     loss = res[0]
                 else:
                     loss = res
             else:
-                loss = criterion(z1, z2)
+                loss = loss_fn(z1, z2)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -154,10 +162,10 @@ def train_simclr(model,
                 _, zv2 = model(v2)
                 # l = criterion(zv1, zv2)
                 if yaware:
-                    res = criterion(zv1, zv2, meta)
+                    res = loss_fn(zv1, zv2, meta)
                     l   = res[0] if isinstance(res, tuple) else res
                 else:
-                    l   = criterion(zv1, zv2)
+                    l   = loss_fn(zv1, zv2)
                 t2 = time.perf_counter()
                 timings['val_forward'] += (t2 - t1)
 
