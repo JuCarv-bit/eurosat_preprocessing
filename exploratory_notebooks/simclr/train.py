@@ -9,8 +9,10 @@ import os
 import wandb
 from simclr.models.loss import NTXentLoss, compute_contrastive_accuracy
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
-from information_extraction import SimCLRWithMetaDataset
+from yaware.information_extraction import SimCLRWithMetaDataset
 import time
+from tqdm.notebook import trange
+
 
 INTERVAL_EPOCHS_LINEAR_PROBE = 20
 INTERVAL_EPOCHS_KNN = 20
@@ -36,6 +38,20 @@ def train_simclr(model,
                  seed=CONFIG["SEED"],
                  yaware=False):
     model.to(device)
+    model.train()
+    print("Measuring time...")
+    timings = {
+        'load_batch': 0.0,
+        'forward': 0.0,
+        'loss+backward+opt': 0.0,
+        'scheduler': 0.0,
+        'val_forward': 0.0,
+        'contrastive_acc': 0.0,
+        'linear_probe': 0.0,
+        'knn': 0.0,
+        'checkpoint': 0.0,
+        'logging': 0.0,
+    }
 
     # create a YYYY-MM-DD_HH-MM-SS directory for saving models
     dirname = time.strftime("%Y-%m-%d_%H-%M-%S")
@@ -72,18 +88,30 @@ def train_simclr(model,
     knn_acc = 0.0
     knn_train_acc = 0.0
 
-    for epoch in range(1, simclr_epochs+1):
+    # for epoch in range(1, simclr_epochs+1):
+    for epoch in trange(1, simclr_epochs + 1, desc="Epochs"):
+        epoch_start = time.perf_counter()
+
+
         # contrastive training
         model.train()
         total_loss = 0.0
         for sample_train in train_loader:
+            t0 = time.perf_counter()
+
             if yaware:
                 x1, x2, meta = sample_train
             else:
                 x1, x2 = sample_train
             x1, x2 = x1.to(device), x2.to(device)
+            t1 = time.perf_counter()
+            timings['load_batch'] += (t1 - t0)
+
+
             _, z1 = model(x1)
             _, z2 = model(x2)
+            t2 = time.perf_counter()
+            timings['forward'] += (t2 - t1)
             if yaware:
                 res = criterion(z1, z2, meta)
                 # if the loss fn returned a tuple, grab the first element
@@ -96,8 +124,14 @@ def train_simclr(model,
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            t3 = time.perf_counter()
+            timings['loss+backward+opt'] += (t3 - t2)
+
+
             if scheduler is not None:
                 scheduler.step()
+            t4 = time.perf_counter()
+            timings['scheduler'] += (t4 - t3)
             total_loss += loss.item() * x1.size(0)
         train_loss = total_loss / len(train_loader.dataset)
 
@@ -105,11 +139,16 @@ def train_simclr(model,
         val_loss = 0.0
         with torch.no_grad():
             for v in contrastive_val_loader:
+                t0 = time.perf_counter()
+
                 if yaware:
                     v1, v2, meta = v
                 else:
                     v1, v2 = v
                 
+                t1 = time.perf_counter()
+                timings['val_forward'] += (t1 - t0)
+
                 v1, v2 = v1.to(device), v2.to(device)
                 _, zv1 = model(v1)
                 _, zv2 = model(v2)
@@ -119,10 +158,15 @@ def train_simclr(model,
                     l   = res[0] if isinstance(res, tuple) else res
                 else:
                     l   = criterion(zv1, zv2)
+                t2 = time.perf_counter()
+                timings['val_forward'] += (t2 - t1)
+
                 val_loss += l.item() * v1.size(0)
         val_loss /= len(contrastive_val_loader.dataset)
 
         if epoch % INTERVAL_CONTRASTIVE_ACC == 0:
+            t0 = time.perf_counter()
+
             contrast_acc = compute_contrastive_accuracy(
                 model, contrastive_val_loader, device, yaware=yaware
             )
@@ -130,9 +174,13 @@ def train_simclr(model,
             contrastive_acc_train = compute_contrastive_accuracy(
                 model, train_loader, device, yaware=yaware
             )
+            timings['contrastive_acc'] += (time.perf_counter() - t0)
+
 
 
         if epoch % INTERVAL_EPOCHS_LINEAR_PROBE == 0:
+            t0 = time.perf_counter()
+
 
             logistic_accuracy = run_logistic_probe(
                 model,
@@ -159,8 +207,12 @@ def train_simclr(model,
                 scale_features="standard",
                 yaware=yaware
             )
+            timings['linear_probe'] += (time.perf_counter() - t0)
+
         
         if epoch % INTERVAL_EPOCHS_KNN == 0:
+            t0 = time.perf_counter()
+
             # fit on probe_train_loader, eval on probe_val_loader
             knn = WeightedKNNClassifier(
                 model=model,
@@ -171,6 +223,8 @@ def train_simclr(model,
             knn.fit(probe_train_loader)
             knn_acc = knn.score(probe_val_loader)
             # knn_train_acc = knn.score(probe_train_loader)
+            timings['knn'] += (time.perf_counter() - t0)
+
 
         msg = (f"Epoch {epoch:02d}/{simclr_epochs} | "
                f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f} | "
@@ -193,9 +247,12 @@ def train_simclr(model,
 
  
         if epoch % EPOCH_SAVE_INTERVAL  == 0:
+            t0 = time.perf_counter()
 
             checkpoint_path = os.path.join(full_model_path, f"{model_base_filename}_epoch_{epoch:03d}.pth")
             torch.save(model.state_dict(), checkpoint_path)
+            timings['checkpoint'] += (time.perf_counter() - t0)
+
 
     seed = CONFIG["SEED"]
     bs = train_loader.batch_size
@@ -204,6 +261,7 @@ def train_simclr(model,
     lr_str = f"{simclr_lr:.0e}" if simclr_lr < 0.0001 else f"{simclr_lr:.6f}"
     model_path = f"models/simclr_seed{seed}_bs{bs}_temp{TEMPERATURE}_Tepochs{epochs_simclr}_lr{lr_str}.pth"
     if wandb_run:
+
         wandb_run.save("models/simclr_seed{seed}_bs{bs}_temp{TEMPERATURE}_Tepochs{epochs_simclr}_lr{simclr_lr}.pth")
 
 
@@ -217,8 +275,10 @@ def train_simclr(model,
     print(f"Final contrastive accuracy on train split: {final_contrast_acc_train*100:.2f}%")
        
     if wandb_run:
+        t0 = time.perf_counter()
         wandb_run.log({"final_contrastive_accuracy": final_contrast_acc})
         wandb_run.log({"final_contrastive_accuracy_train": final_contrast_acc_train})
+        timings['logging'] += (time.perf_counter() - t0)
     
     knn = WeightedKNNClassifier(
                 model=model,
@@ -251,5 +311,9 @@ def train_simclr(model,
         wandb_run.log({"final_knn_train_acc_k1": knn_train_acc_k1})
     torch.save(model.state_dict(), model_path)
     print(f"Model saved to {model_path}")
+
+    print("\n=== Timing Breakdown ===")
+    for stage, t in timings.items():
+        print(f"{stage:15s}: {t:.1f}s ({t/simclr_epochs:.1f}s/epoch)")
 
 
