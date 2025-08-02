@@ -1,6 +1,7 @@
 CONFIG = {
-    "Y_AWARE": False,
-    "ORIGINAL_Y_AWARE": False,  # If True, use the original y-aware loss function
+    "Y_AWARE": True,
+    "ORIGINAL_Y_AWARE": True,  # If True, use the original y-aware loss function
+    "TARGET_GPU_INDEX": 1, 
     "LOCAL_OR_COLAB": "LOCAL",
     "DATA_DIR_LOCAL": "/share/DEEPLEARNING/carvalhj/EuroSAT_RGB/",
     "DATA_DIR_COLAB": "/content/EuroSAT_RGB",
@@ -12,7 +13,7 @@ CONFIG = {
     "LR": 3.75e-4,
     "WD": 0.5,
     "LR_LINEAR": 3.75e-4,
-    "EPOCHS_SIMCLR": 100,
+    "EPOCHS_SIMCLR": 200,
     "EPOCHS_LINEAR": 20,
     "EPOCH_SAVE_INTERVAL": 10,
     "TEMPERATURE": 0.2,
@@ -26,5 +27,4 @@ CONFIG = {
     "VAL_FRAC": 0.1,    
     "TEST_FRAC": 0.1,
     "EUROSAT_IMAGE_SIZE": (64, 64),
-    "TARGET_GPU_INDEX": 1, 
 }
