@@ -17,3 +17,4 @@ exploratory_notebooks/eurosat_project.egg-info/*
 exploratory_notebooks/yaware/models/*
 exploratory_notebooks/build/*
 exploratory_notebooks/dist/*
+exploratory_notebooks/yaware_project.egg-info/*

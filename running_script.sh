@@ -1,8 +1,8 @@
 #!/bin/bash
-tmux new-session -As jobeurosatcontrastive-yaware_v3
+tmux new-session -As train-yaware200
 # cd /users/c/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks
-cd  exploratory_notebooks/yaware
+cd  exploratory_notebooks/notebooks
 conda activate yaware_eurosat 
-jupyter nbconvert --to script yaware_newarchsimclr.ipynb --output eurosat_contrastiveyaware_v3
+jupyter nbconvert --to script yaware_newarchsimclr_original_loss.ipynb --output yaware_newarchsimclr_original_200
 mkdir -p runs
-python eurosat_contrastiveyaware_v3.py > runs/jobeurosat_contrastiveyaware_v3.log 2>&1
+python yaware_newarchsimclr_original_200.py > runs/yaware_newarchsimclr_original_200.log 2>&1
