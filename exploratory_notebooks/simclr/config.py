@@ -13,9 +13,12 @@ CONFIG = {
     "LR": 3.75e-4,
     "WD": 0.5,
     "LR_LINEAR": 3.75e-4,
-    "EPOCHS_SIMCLR": 200,
-    "EPOCHS_LINEAR": 20,
-    "EPOCH_SAVE_INTERVAL": 10,
+    "EPOCHS_SIMCLR": 2,
+    "EPOCHS_LINEAR": 2,
+    "EPOCH_SAVE_INTERVAL": 1,
+    "INTERVAL_EPOCHS_LINEAR_PROBE": 20,
+    "INTERVAL_EPOCHS_KNN": 20,
+    "INTERVAL_CONTRASTIVE_ACC": 5,
     "TEMPERATURE": 0.2,
     "PROJ_DIM": 64,
     "FEATURE_DIM": 512, # ResNet50 feature dimension = 2048, ResNet18 feature dimension = 512
@@ -28,3 +31,4 @@ CONFIG = {
     "TEST_FRAC": 0.1,
     "EUROSAT_IMAGE_SIZE": (64, 64),
 }
+

@@ -14,9 +14,9 @@ import time
 from tqdm.notebook import trange
 
 
-INTERVAL_EPOCHS_LINEAR_PROBE = 20
-INTERVAL_EPOCHS_KNN = 20
-INTERVAL_CONTRASTIVE_ACC = 5
+INTERVAL_EPOCHS_LINEAR_PROBE = CONFIG["INTERVAL_EPOCHS_LINEAR_PROBE"]
+INTERVAL_EPOCHS_KNN = CONFIG["INTERVAL_EPOCHS_KNN"]
+INTERVAL_CONTRASTIVE_ACC = CONFIG["INTERVAL_CONTRASTIVE_ACC"]
 
 def train_simclr(model,
                  train_loader,        # yields (x1, x2)
@@ -90,7 +90,6 @@ def train_simclr(model,
     knn_train_acc = 0.0
 
     original_yaware = CONFIG["ORIGINAL_Y_AWARE"]
-
     # for epoch in range(1, simclr_epochs+1):
     for epoch in trange(1, simclr_epochs + 1, desc="Epochs"):
         epoch_start = time.perf_counter()
@@ -264,13 +263,25 @@ def train_simclr(model,
 
     seed = CONFIG["SEED"]
     bs = train_loader.batch_size
-    epochs_simclr = CONFIG["EPOCHS_SIMCLR"]
     simclr_lr = CONFIG["LR"]
     lr_str = f"{simclr_lr:.0e}" if simclr_lr < 0.0001 else f"{simclr_lr:.6f}"
-    model_path = f"models/simclr_seed{seed}_bs{bs}_temp{TEMPERATURE}_Tepochs{epochs_simclr}_lr{lr_str}.pth"
-    if wandb_run:
 
-        wandb_run.save("models/simclr_seed{seed}_bs{bs}_temp{TEMPERATURE}_Tepochs{epochs_simclr}_lr{simclr_lr}.pth")
+    def get_model_name():
+        if CONFIG["ORIGINAL_Y_AWARE"]:
+            return f"original_yaware"
+        if CONFIG["Y_AWARE"]:
+            return f"yaware"
+        return "simclr"
+
+    artifact = wandb.Artifact(
+        name=get_model_name(),
+        type="model",
+        description="SimCLR model trained on Eurosat dataset"
+    )
+    checkpoint_path = os.path.join(full_model_path, f"{model_base_filename}_epoch_{simclr_epochs:03d}.pth")
+
+    artifact.add_file(checkpoint_path)
+    wandb_run.log_artifact(artifact)
 
 
     final_contrast_acc = compute_contrastive_accuracy(
@@ -317,11 +328,8 @@ def train_simclr(model,
     if wandb_run:
         wandb_run.log({"final_knn_train_acc": knn_train_acc})
         wandb_run.log({"final_knn_train_acc_k1": knn_train_acc_k1})
-    torch.save(model.state_dict(), model_path)
-    print(f"Model saved to {model_path}")
-
     print("\n=== Timing Breakdown ===")
     for stage, t in timings.items():
         print(f"{stage:15s}: {t:.1f}s ({t/simclr_epochs:.1f}s/epoch)")
-
-
+    # return the filename of the last checkpoint    
+    return checkpoint_path

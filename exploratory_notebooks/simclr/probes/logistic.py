@@ -9,6 +9,7 @@ from utils.version_utils import print_versions, configure_gpu_device
 from transfer.logistic_regrssion import  SklearnLogisticProbe
 
 from torch.utils.data import DataLoader, Dataset
+import os
 
 
 
@@ -72,7 +73,8 @@ def run_logistic_probe_experiment(
     test_loader,
     num_classes,
     simclr_model,
-    bs
+    bs,
+    save_dir=None
 ):
     
     TEMPERATURE = CONFIG["TEMPERATURE"]
@@ -126,7 +128,13 @@ def run_logistic_probe_experiment(
     })
 
     # 5) save sklearn classifier (and optionally scaler & encoder weights)
-    model_path = f"models/logistic_probe_seed{seed}_bs{bs}.pkl"
+    # model_path = f"models/logistic_probe_seed{seed}_bs{bs}.pkl"
+    if save_dir is None:
+        save_dir = "models"
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    model_path = os.path.join(save_dir, f"logistic_probe_seed{seed}_bs{bs}_temp{TEMPERATURE}.pkl")
+
     joblib.dump({
         "clf": probe.clf,
         "scaler": probe.scaler,
@@ -134,6 +142,14 @@ def run_logistic_probe_experiment(
         "config": CONFIG,
         "seed": seed
     }, model_path)
+    # add model as artifact to wandb
+    artifact = wandb.Artifact(
+        name=f"logistic_probe_seed{seed}_bs{bs}_temp{TEMPERATURE}",
+        type="model",
+        description="Logistic regression probe trained on SimCLR features")
+    artifact.add_file(model_path)
+    wandb.log_artifact(artifact)
+    wandb.finish()
     print(f"Saved probe + encoder to {model_path}")
 
     return train_acc / 100.0, test_acc / 100.0
