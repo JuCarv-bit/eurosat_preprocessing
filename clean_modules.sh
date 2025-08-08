@@ -1,6 +1,6 @@
 # To install the yaware_eurosat conda environment, run:
-conda env create -f myenv.yml
-
+# conda env create -f myenv.yml
+conda init
 # To clean the modules references (create from setup.py), run:
 conda activate yaware_eurosat
 # delete any cache files

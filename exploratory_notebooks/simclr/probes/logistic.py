@@ -89,8 +89,8 @@ def run_logistic_probe_experiment(
             "temperature": TEMPERATURE,
             "batch_size": bs,
             "num_classes": num_classes,
-            "C": 1.0,      # repurpose LR as inverse‐reg strength
-            "max_iter": 500
+            "C": CONFIG["C_LIN_PROBE"],      # repurpose LR as inverse‐reg strength
+            "max_iter": CONFIG["MAX_ITER_LIN_PROBE"],
         }
     )
 

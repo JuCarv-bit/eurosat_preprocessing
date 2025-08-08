@@ -1,8 +1,8 @@
 import torch
 from torchvision import transforms
 
-MS_PATH  = "/users/c/carvalhj/datasets/eurosat/EuroSAT_MS/"
-RGB_PATH = "/users/c/carvalhj/datasets/eurosat/EuroSAT_RGB/"
+MS_PATH  = "/share/DEEPLEARNING/carvalhj/EuroSAT_MS/"
+RGB_PATH = "/share/DEEPLEARNING/carvalhj/EuroSAT_RGB/"
 BATCH_SIZE = 4
 
 from information_extraction import (
