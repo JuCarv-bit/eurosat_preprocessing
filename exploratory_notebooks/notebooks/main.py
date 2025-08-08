@@ -12,14 +12,11 @@ from yaware import information_extraction
 
 import os
 import torch
-import torch.nn as nn
 from torchvision.models import resnet18
-import numpy as np
 import time
 import argparse
 
-from yaware import information_extraction
-from new_architecture_simclr.network import resnet18, projection_MLP
+
 from yaware.haversine_loss import HaversineRBFNTXenLoss
 from yaware.losses import GeneralizedSupervisedNTXenLoss
 import simclr.data.datamodule as simclr_datamodule
@@ -27,17 +24,17 @@ from simclr.data.datamodule import compute_mean_std, prepare_data, combine_train
 from utils.version_utils import print_versions, configure_gpu_device, set_seed
 from simclr.data.transforms import  get_transforms
 from simclr.models.loss import NTXentLoss
+from simclr.models.simclr import build_simclr_network
 from simclr.probes.logistic import get_probe_loaders, run_logistic_probe_experiment
 from simclr.utils.scheduler import make_optimizer_scheduler
 from simclr.utils.misc import evaluate
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
 from simclr.config import CONFIG
 from simclr.train import train_simclr
-
+import argparse
 
 
 import os
-assert os.path.exists(weight_path), f"File not found: {weight_path}"
 
 print_versions()
 set_seed(seed=42)
@@ -94,32 +91,9 @@ parser.add_argument("--proj_dim",   type=int,   default=CONFIG["PROJ_DIM"],
 
 args = parser.parse_args([])
 
-args
+print(f"Arguments: {args}")
 
-
-
-
-
-base_encoder = resnet18(
-    args,
-    num_classes=args.feature_dim,     # make fc output = feature_dim
-    zero_init_residual=False
-)
-proj_head = projection_MLP(args)
-
-class SimCLRModel(nn.Module):
-    def __init__(self, base_encoder, proj_head):
-        super().__init__()
-        self.encoder = base_encoder
-        self.encoder.fc = nn.Identity()
-        self.projection_head = proj_head
-
-    def forward(self, x):
-        feat = self.encoder(x)
-        proj = self.projection_head(feat)
-        return feat, proj
-    
-simclr_model = SimCLRModel(base_encoder, proj_head).to(DEVICE)
+simclr_model = build_simclr_network(DEVICE, args)
 
 
 seeds = [GLOBAL_SEED]
