@@ -152,4 +152,17 @@ def run_logistic_probe_experiment(
     wandb.finish()
     print(f"Saved probe + encoder to {model_path}")
 
+    probe_stats = {
+        "train_accuracy": train_acc,
+        "test_accuracy": test_acc,
+        "num_classes": num_classes,
+        "batch_size": bs,
+        "temperature": TEMPERATURE,
+        "seed": seed,
+    }
+    stats_path = os.path.join(save_dir, f"logistic_probe_stats_seed{seed}_bs{bs}_temp{TEMPERATURE}.json")
+    with open(stats_path, "w") as f:
+        import json
+        json.dump(probe_stats, f, indent=4)
+
     return train_acc / 100.0, test_acc / 100.0
