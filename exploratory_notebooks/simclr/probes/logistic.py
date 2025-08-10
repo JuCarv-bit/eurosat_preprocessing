@@ -6,7 +6,7 @@ import torch
 import wandb
 import joblib
 from utils.version_utils import print_versions, configure_gpu_device
-from transfer.logistic_regrssion import  SklearnLogisticProbe
+from transfer.logistic_regression import  SklearnLogisticProbe
 
 from torch.utils.data import DataLoader, Dataset
 import os

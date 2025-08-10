@@ -20,7 +20,6 @@ import argparse
 from yaware.haversine_loss import HaversineRBFNTXenLoss
 from yaware.losses import GeneralizedSupervisedNTXenLoss
 import simclr.data.datamodule as simclr_datamodule
-from simclr.data.datamodule import compute_mean_std, prepare_data, combine_train_val_loaders, SimCLRDataset, get_split_indexes
 from utils.version_utils import print_versions, configure_gpu_device, set_seed
 from simclr.data.transforms import  get_transforms
 from simclr.models.loss import NTXentLoss
@@ -169,8 +168,6 @@ for seed in seeds:
         loss_fn, 
         DEVICE,
         simclr_epochs=CONFIG["EPOCHS_SIMCLR"],
-        probe_lr=CONFIG["LR_LINEAR"],
-        probe_epochs=1,            # 1 pass per epoch is typical
         feature_dim=CONFIG["FEATURE_DIM"],
         num_classes=num_classes,
         augment_transform=augment_transform,

@@ -1,5 +1,5 @@
 from simclr.data.datamodule import SimCLRDataset, TwoCropsTransform
-from transfer.logistic_regrssion import  SklearnLogisticProbe, run_logistic_probe
+from transfer.logistic_regression import  SklearnLogisticProbe, run_logistic_probe
 from transfer.knn import WeightedKNNClassifier
 from simclr.config import CONFIG
 from simclr.utils.scheduler import make_optimizer_scheduler
@@ -27,8 +27,6 @@ def train_simclr(model,
                  loss_fn,
                  device,
                  simclr_epochs,
-                 probe_lr,
-                 probe_epochs,
                  feature_dim,
                  num_classes,
                  augment_transform,   # the same augment in SimCLRDataset

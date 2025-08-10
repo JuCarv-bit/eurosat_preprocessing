@@ -1,23 +1,4 @@
-import os
-import ssl
-import zipfile
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import transforms, datasets, models
-from torch.utils.data import DataLoader, random_split, Dataset, Subset
-from PIL import Image
-import numpy as np
-from sklearn.model_selection import StratifiedShuffleSplit
-from torch.optim.lr_scheduler import LinearLR, CosineAnnealingLR, SequentialLR
-import seaborn as sns
-from utils.version_utils import print_versions, configure_gpu_device, set_seed
-from torch.utils.data import ConcatDataset, DataLoader
-import torch.nn.functional as F
-from transfer.knn import WeightedKNNClassifier
-from transfer.logistic_regrssion import  SklearnLogisticProbe, run_logistic_probe
-import joblib
+from torchvision import transforms
 from simclr.config import CONFIG
 
 
@@ -27,9 +8,6 @@ class TwoCropsTransform:
 
     def __call__(self, x):
         return [self.base_transform(x), self.base_transform(x)]
-    
-
-
 
 def get_transforms(mean, std):
 

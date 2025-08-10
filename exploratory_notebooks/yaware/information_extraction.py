@@ -97,7 +97,7 @@ def extract_metadata(ms_path, rgb_path, use_cache=True):
 class EuroSATDataset(Dataset):
     def __init__(self, rgb_root, metadata_df, transform=None):
         """
-        rgb_root:   root directory of your JPEGs (EUROSAT_RGB_PATH)
+        rgb_root:   root directory of JPEGs (EUROSAT_RGB_PATH)
         metadata_df: as returned by extract_metadata
         """
         self.rgb_root = rgb_root

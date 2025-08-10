@@ -23,7 +23,7 @@ from utils.version_utils import print_versions, configure_gpu_device, set_seed
 from torch.utils.data import ConcatDataset, DataLoader
 import torch.nn.functional as F
 from transfer.knn import WeightedKNNClassifier
-from transfer.logistic_regrssion import  SklearnLogisticProbe, run_logistic_probe
+from transfer.logistic_regression import  SklearnLogisticProbe, run_logistic_probe
 import joblib
 
 from simclr.data.transforms import get_transforms, TwoCropsTransform
@@ -137,7 +137,7 @@ def get_split_indexes(labels, total_count):
     assert len(test_idx) == n_test
 
     print(f"Stratified split sizes: train={len(train_idx)}, val={len(val_idx)}, test={len(test_idx)}")
-    return train_idx,val_idx,test_idx
+    return train_idx, val_idx, test_idx
 
 
 def get_data_loaders(data_dir, batch_size):
