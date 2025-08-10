@@ -10,7 +10,7 @@ class WeightedKNNClassifier:
         Cosine-distance k-NN with distance-weighted voting.
         
         Args:
-            model      : Your SimCLR model; must have `model.encoder(imgs)` -> features
+            model      : SimCLR model; must have `model.encoder(imgs)` -> features
             device     : 'cpu' or 'cuda'
             k          : Number of neighbors
             normalize  : Whether to L2-normalize features before indexing
