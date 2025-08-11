@@ -69,7 +69,6 @@ def get_probe_loaders(train_loader, val_loader, eval_transform, probe_batch_size
 def run_logistic_probe_experiment(
     seed,
     train_loader,
-    val_loader,
     test_loader,
     num_classes,
     simclr_model,
@@ -94,12 +93,12 @@ def run_logistic_probe_experiment(
         }
     )
 
-    if val_loader is not None:
-        train_val_loader = combine_train_val_loaders(train_loader, val_loader)
-    else:
-        train_val_loader = train_loader
+    # if val_loader is not None:
+    #     train_val_loader = combine_train_val_loaders(train_loader, val_loader)
+    # else:
+    #     train_val_loader = train_loader
 
-    print(f"[Data] train+val loader has {len(train_val_loader)} batches")
+    print(f"[Data] train+val loader has {len(train_loader)} batches")
 
     # 2) wrap frozen encoder in the sklearn probe
     probe = SklearnLogisticProbe(
@@ -114,10 +113,10 @@ def run_logistic_probe_experiment(
 
     # 3) fit on train+val
     print("Fitting logistic regression probe…")
-    probe.fit(train_val_loader)
+    probe.fit(train_loader)
 
     # 4) evaluate on train+val and test
-    train_acc = probe.score(train_val_loader) * 100.0
+    train_acc = probe.score(train_loader) * 100.0
     test_acc  = probe.score(test_loader)      * 100.0
 
     print(f"[Probe] Train+Val Acc: {train_acc:.2f}%,  Test Acc: {test_acc:.2f}%")
@@ -164,5 +163,5 @@ def run_logistic_probe_experiment(
     with open(stats_path, "w") as f:
         import json
         json.dump(probe_stats, f, indent=4)
-
+        print(f"Saved probe stats to {stats_path}")
     return train_acc / 100.0, test_acc / 100.0

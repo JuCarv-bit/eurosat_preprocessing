@@ -23,7 +23,6 @@ from utils.version_utils import print_versions, configure_gpu_device, set_seed
 from torch.utils.data import ConcatDataset, DataLoader
 import torch.nn.functional as F
 from transfer.knn import WeightedKNNClassifier
-from transfer.logistic_regression import  SklearnLogisticProbe, run_logistic_probe
 import joblib
 
 from simclr.data.transforms import get_transforms, TwoCropsTransform
@@ -43,7 +42,7 @@ class SimCLRDataset(Dataset):
 
 def prepare_data():
     if CONFIG["LOCAL_OR_COLAB"] == "LOCAL":
-        return CONFIG["DATA_DIR_LOCAL"]
+        return CONFIG["DATA_DIR_EUROSAT_RGB"]
 
     if not os.path.exists(CONFIG["DATA_DIR_COLAB"]):
         print("Downloading EuroSAT RGB...")

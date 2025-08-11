@@ -51,9 +51,9 @@ def compute_contrastive_accuracy(model, loader, device, yaware=False):
 
     for sample in loader:
         if yaware:
-            x1, x2, meta = sample
+            x1, x2, meta, y = sample
         else:
-            x1, x2 = sample
+            x1, x2, y = sample
         x1, x2 = x1.to(device), x2.to(device)
         _, z1 = model(x1)   # proj head output
         _, z2 = model(x2)

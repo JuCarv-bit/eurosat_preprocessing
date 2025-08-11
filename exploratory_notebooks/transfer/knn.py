@@ -33,7 +33,7 @@ class WeightedKNNClassifier:
         self.encoder.eval()
         feats, labs = [], []
         with torch.no_grad():
-            for imgs, labels in loader:
+            for imgs, imgs2, labels in loader:
                 imgs = imgs.to(self.device)
                 f    = self.encoder(imgs)              # (B, D)
                 if self.normalize:

@@ -26,13 +26,11 @@ from simclr.models.loss import NTXentLoss
 from simclr.models.simclr import build_simclr_network
 from simclr.probes.logistic import get_probe_loaders, run_logistic_probe_experiment
 from simclr.utils.scheduler import make_optimizer_scheduler
-from simclr.utils.misc import evaluate
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
+from simclr.train_simclr_v2  import train_simclr_v2_function
 from simclr.config import CONFIG
-from simclr.train import train_simclr
 import argparse
-
-
+from simclr.data.eurosat_datasets import get_pretrain_loaders
 import os
 
 print_versions()
@@ -158,20 +156,14 @@ for seed in seeds:
 
     start = time.time()
     print(f"Starting SimCLR training at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
-    filename_pretrained_weights = train_simclr(
+    filename_pretrained_weights = train_simclr_v2_function(
         simclr_model,
-        train_loader, 
-        val_loader,
-        probe_train_loader, 
-        probe_val_loader,
         optimizer, 
         loss_fn, 
         DEVICE,
         simclr_epochs=CONFIG["EPOCHS_SIMCLR"],
         feature_dim=CONFIG["FEATURE_DIM"],
         num_classes=num_classes,
-        augment_transform=augment_transform,
-        val_subset_no_transform=val_subset_no_transform,
         wandb_run=wandb_run,
         scheduler=scheduler,
         seed=seed,
@@ -195,26 +187,31 @@ bs = CONFIG["BATCH_SIZE"]
 epochs_simclr = CONFIG["EPOCHS_SIMCLR"]
 simclr_lr = CONFIG["LR"]
 lr_str = f"{simclr_lr:.0e}" if simclr_lr < 0.0001 else f"{simclr_lr:.6f}"
-model_path = filename_pretrained_weights
-print(f"Using model path: {model_path}")
+print(f"Using model path: {filename_pretrained_weights}")
 
-if not os.path.exists(model_path):
-    print(f"Model {model_path} does not exist. Please run the SimCLR pretraining first.")
+if not os.path.exists(filename_pretrained_weights):
+    print(f"Model {filename_pretrained_weights} does not exist. Please run the SimCLR pretraining first.")
 
-checkpoint_path = model_path
-state_dict = torch.load(checkpoint_path, map_location=torch.device(DEVICE), weights_only=True)
+state_dict = torch.load(filename_pretrained_weights, map_location=torch.device(DEVICE), weights_only=True)
 simclr_model.load_state_dict(state_dict)
 
 # Perform linear probe on train+val as train set, and test as test set
-train_loader, test_loader, num_classes = get_data_loaders_train_test_linear_probe(CONFIG["DATA_DIR_LOCAL"], CONFIG["BATCH_SIZE"])
+train_loader, test_loader, num_classes = get_data_loaders_train_test_linear_probe(CONFIG["DATA_DIR_EUROSAT_RGB"], CONFIG["BATCH_SIZE"])
+_, _, train_loader_eval, test_loader_eval = get_pretrain_loaders(
+    CONFIG["DATA_DIR_EUROSAT_MS"],
+    CONFIG["DATA_DIR_EUROSAT_RGB"],
+    batch_size=CONFIG["BATCH_SIZE"],
+    task="simclr",
+    build_eval_loaders=True,
+    use_test_as_eval=True,
+)
+
 run_logistic_probe_experiment(
-    42,
+    CONFIG["SEED"],
     train_loader,
-    None,  # No validation loader for linear probe
     test_loader,
     num_classes,
     simclr_model,
     bs,
-    save_dir=os.path.dirname(model_path)
+    save_dir=os.path.dirname(filename_pretrained_weights)
 )
-

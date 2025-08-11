@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from typing import Literal, Any
+from simclr.config import CONFIG
 
 
 class SklearnLogisticProbe:
@@ -30,10 +31,11 @@ class SklearnLogisticProbe:
         self.scaler = StandardScaler() if scale_features == "standard" else None
         self.yaware = yaware
 
-    def _extract(self, loader: torch.utils.data.DataLoader):
+    def _extract(self, loader: torch.utils.data.DataLoader, yaware: bool = False):
         feats, labs = [], []
-        with torch.no_grad():
-            for imgs, labels in loader:
+        with torch.no_grad(): # train_loader_eval/eval_loader_eval: (img, img, label)
+            for sample in loader:
+                imgs, labels = sample[0], sample[-1]
                 imgs = imgs.to(self.device)
                 f = self.encoder(imgs)
                 feats.append(f.cpu().numpy())
@@ -73,22 +75,22 @@ class SklearnLogisticProbe:
         X = self._scale(X, train=False)
         return self.clf.score(X, y)
 
+@torch.no_grad()
 def run_logistic_probe(
     model,
     probe_train_loader,
     probe_val_loader,
-    feature_dim,       
-    num_classes,       
     device,
+    yaware,
+    *,
     C=1.0,
     max_iter=200,
-    scale_features="standard",
-    yaware=False
+    scale_features="standard"
 ):
     """
-    1) Wraps encoder in SklearnLogisticProbe
-    2) .fit() on train loader
-    3) .score() on val loader
+     Wraps encoder in SklearnLogisticProbe
+     .fit() on train loader
+     .score() on val loader
     Returns float accuracy in [0,1].
     """
 
@@ -97,13 +99,15 @@ def run_logistic_probe(
         encoder=model.encoder,
         device=device,
         scale_features=scale_features,
+        yaware=yaware,
         C=C,
         max_iter=max_iter,
         multi_class="multinomial",
         solver="lbfgs",
-        yaware=yaware
+        verbose=1,
+        tol=CONFIG["TOL_LOGISTIC_REGRESSION"],
     )
-
+    
     # Fit
     probe.fit(probe_train_loader)
 

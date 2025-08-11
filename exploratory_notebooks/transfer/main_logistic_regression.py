@@ -1,18 +1,14 @@
 from simclr.config import CONFIG
-from simclr.train import train_simclr
 from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
-
 from utils.version_utils import configure_gpu_device
 import os
 import torch
 from simclr.models.simclr import build_simclr_network
 import argparse
 import torch.nn.functional as F
-
 from transfer.new_knn import NNClassifier                       
 from transfer.new_logistic import SklearnLogisticClassifier    
 from transfer.eval import evaluate                             
-
 
 @torch.inference_mode()
 def _extract_features(encoder: torch.nn.Module,
@@ -82,7 +78,7 @@ encoder = getattr(simclr_model, "encoder", simclr_model)
 encoder.eval().to(DEVICE)
 
 train_loader, test_loader, num_classes = get_data_loaders_train_test_linear_probe(
-    CONFIG["DATA_DIR_LOCAL"], CONFIG["BATCH_SIZE"]
+    CONFIG["DATA_DIR_EUROSAT_RGB"], CONFIG["BATCH_SIZE"]
 )
 
 Xtr_knn, ytr = _extract_features(encoder, train_loader, DEVICE, l2norm=True)

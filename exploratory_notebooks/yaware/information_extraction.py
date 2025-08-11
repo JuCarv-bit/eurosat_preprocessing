@@ -12,37 +12,7 @@ from pyproj import Transformer
 from simclr.data.datamodule import get_split_indexes, compute_mean_std, get_transforms, TwoCropsTransform, SimCLRDataset
 from tqdm import tqdm
 from functools import lru_cache
-
-CONFIG = {
-    "LOCAL_OR_COLAB": "LOCAL",
-    "DATA_DIR_LOCAL": "/share/DEEPLEARNING/carvalhj/EuroSAT_RGB/",
-    "DATA_DIR_COLAB": "/content/EuroSAT_RGB",
-    "ZIP_PATH": "/content/EuroSAT.zip",
-    "EUROSAT_URL": "https://madm.dfki.de/files/sentinel/EuroSAT.zip",
-    "SEED": 42,  
-    "BATCH_SIZE": 256,
-    "LR": 3.75e-4,
-    "WD": 0.5,
-    "LR_LINEAR": 3.75e-4,
-    "EPOCHS_SIMCLR": 2,
-    "TEMPERATURE": 0.2,
-    "PROJ_DIM": 64,
-    "MODEL": "Resnet18",  # Options: "ResNet18", "ResNet50"
-    "NUM_CLASSES": 10,  # EuroSAT has 10 classes
-    "FEATURE_DIM_RESNET50": 2048, # ResNet50 feature dimension = 2048
-    "FEATURE_DIM_RESNET18": 512, # ResNet18 feature dimension = 512
-    "MEAN":  [0.3441457152366638, 0.3800985515117645, 0.40766361355781555],
-    "STD":   [0.09299741685390472, 0.06464490294456482, 0.05413917079567909],
-    "NUM_WORKERS": 8,
-    "K": 5,
-    "EPOCH_SAVE_INTERVAL": 10,
-    "TRAIN_FRAC": 0.8,  
-    "VAL_FRAC": 0.1,    
-    "TEST_FRAC": 0.1,
-    "EUROSAT_IMAGE_SIZE": (64, 64),
-    "TARGET_GPU_INDEX": 0,
-    "PROJ_DIM": 128,
-}
+from simclr.config import CONFIG
 
 CACHE_FILE = "eurosat_metadata_cache.pkl"
 @lru_cache(maxsize=1)
