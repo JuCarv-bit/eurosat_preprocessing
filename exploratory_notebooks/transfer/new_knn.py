@@ -75,10 +75,7 @@ class NNClassifier:
         self.train_labels = train_labels
         self.device = self.train_features.device
         self._fitted = True
-        # self._is_multi_label = train_labels.ndim == 2
-
-        # internal usage only / to avoid creating same tensor across forward calls
-        # @fixme: can be avoided: bad practice
+        
         self._retrieval_one_hot = torch.zeros(self.k, self.num_classes).to(self.device)
 
     def forward(
