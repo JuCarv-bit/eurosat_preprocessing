@@ -1,217 +1,255 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from dotenv import load_dotenv
-load_dotenv()       # reads .env and sets os.environ
-import wandb
-wandb.login()
-
-import sys
-sys.path.insert(0, "/share/homes/carvalhj/projects/eurosat_preprocessing")
-from yaware import information_extraction
-
+from __future__ import annotations
 import os
+import argparse
+from typing import Tuple
 import torch
-from torchvision.models import resnet18
-import time
-import argparse
+import torch.nn.functional as F
+from tqdm import tqdm
+from dotenv import load_dotenv
+from torch import Tensor
+import json
+from pathlib import Path
+import datetime
+from transfer.new_knn import NNClassifier
+from transfer.new_logistic import SklearnLogisticClassifier
+from torchmetrics import (
+    Accuracy,
+    AveragePrecision,
+    ConfusionMatrix,
+    F1Score,
+    MetricCollection,
+    Precision,
+    Recall,
+)
+import utils.plot_metrics as plotter
+try:
+    from utils.version_utils import print_versions, configure_gpu_device, set_seed
+except Exception:
+    def print_versions(): pass
+    def configure_gpu_device(_idx: int): 
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def set_seed(seed: int = 42):
+        import random, numpy as np
+        random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
+        if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
 
-
-from yaware.haversine_loss import HaversineRBFNTXenLoss
-from yaware.losses import GeneralizedSupervisedNTXenLoss
-import simclr.data.datamodule as simclr_datamodule
-from utils.version_utils import print_versions, configure_gpu_device, set_seed
-from simclr.data.transforms import  get_transforms
-from simclr.models.loss import NTXentLoss
-from simclr.models.simclr import build_simclr_network
-from simclr.probes.logistic import get_probe_loaders, run_logistic_probe_experiment
-from simclr.utils.scheduler import make_optimizer_scheduler
-from simclr.data.mydataloaders import get_data_loaders_train_test_linear_probe
-from simclr.train_simclr_v2  import train_simclr_v2_function
 from simclr.config import CONFIG
-import argparse
+from simclr.models.simclr import build_simclr_network
 from simclr.data.eurosat_datasets import get_pretrain_loaders
-import os
-
-print_versions()
-set_seed(seed=42)
-TARGET_GPU_INDEX = CONFIG["TARGET_GPU_INDEX"] if "TARGET_GPU_INDEX" in CONFIG else 0  # Default to 0 if not set
-DEVICE = configure_gpu_device(TARGET_GPU_INDEX)
 
 
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-torch.backends.cudnn.enabled = False
-torch.backends.cudnn.benchmark = True
-
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-# split fractions
-TRAIN_FRAC = CONFIG["TRAIN_FRAC"]
-VAL_FRAC   = CONFIG["VAL_FRAC"]
-TEST_FRAC  = CONFIG["TEST_FRAC"]
-
-SEED = CONFIG["SEED"]
-
-PRETRAINED = False
-
-TEMPERATURE = CONFIG["TEMPERATURE"]
-
-BETAS=(0.9,0.98)
-EPS = 1e-8
-
-GLOBAL_SEED = CONFIG["SEED"]
-NUM_WORKERS = CONFIG["NUM_WORKERS"]
-
-EUROSAT_IMAGE_SIZE = (64, 64)
-MODEL_INPUT_SIZE = [224, 224]
-EPOCH_SAVE_INTERVAL = CONFIG["EPOCH_SAVE_INTERVAL"]
-
-MS_PATH  = "/users/c/carvalhj/datasets/eurosat/EuroSAT_MS/"
-RGB_PATH = "/users/c/carvalhj/datasets/eurosat/EuroSAT_RGB/"
-
-BATCH_SIZE = CONFIG["BATCH_SIZE"]
-YAWARE = CONFIG["Y_AWARE"] if "Y_AWARE" in CONFIG else False
 
 
-parser = argparse.ArgumentParser("SimCLR EuroSAT")
-parser.add_argument("--dataset",    type=str,   default="eurosat",
-                    help="dataset name (controls CIFAR‑stem in network.py)")
-parser.add_argument("--model",      type=str,   default="resnet18",
-                    choices=["resnet18","resnet34","resnet50","resnet101","resnet152"],
-                    help="which ResNet depth to use")
-parser.add_argument("--n_classes",  type=int,   default=10,
-                    help="# of EuroSAT semantic classes")
-parser.add_argument("--feature_dim",type=int,   default=512,
-                    help="backbone output dim (for SimCLR we set fc→feature_dim)")
-parser.add_argument("--proj_dim",   type=int,   default=CONFIG["PROJ_DIM"],
-                    help="projection MLP output dim (usually 128)")
+def _none_or_str(value: str) -> str | None:
+    if value == "None":
+        return None
+    return value
 
-args = parser.parse_args([])
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser("Feature extraction + KNN on EuroSAT (SimCLR backbone)")
+    parser.add_argument("--model",      type=str, default="resnet18",
+                        choices=["resnet18","resnet34","resnet50","resnet101","resnet152"])
+    parser.add_argument("--n-classes",  type=int, default=10)
+    parser.add_argument("--feature-dim",type=int, default=512)
+    parser.add_argument("--proj-dim",   type=int, default=CONFIG.get("PROJ_DIM", 128))
+    parser.add_argument("--weights", type=str,  default=None, required=False,
+                        help="Optional path to pretrained weights (.pth). If not provided, the model starts with random weights.")
+    parser.add_argument("--output-dir", type=str, default="output", help="Directory to save output files", required=False)
+    parser.add_argument("--batch-size", type=int, default=CONFIG.get("BATCH_SIZE", 256))
+    parser.add_argument("--k",          type=int, default=5, help="k for KNN")
+    parser.add_argument("--l2norm",     action="store_true", help="L2-normalize features")
+    parser.add_argument("--seed",       type=int, default=CONFIG.get("SEED", 42))
+    parser.add_argument("--gpu-index",  type=int, default=CONFIG.get("TARGET_GPU_INDEX", 0))
+    parser.add_argument("--data-ms",    type=str, default=CONFIG.get("DATA_DIR_EUROSAT_MS"))
+    parser.add_argument("--data-rgb",   type=str, default=CONFIG.get("DATA_DIR_EUROSAT_RGB"))
+    parser.add_argument("--use-test-as-eval", action="store_true", default=True)
+    parser.add_argument("--cudnn-benchmark", action="store_true", default=True)
+    parser.add_argument("--no-cudnn", action="store_true", help="Disable cuDNN (debug)")
+    parser.add_argument("--dataset",    type=str, default="eurosat")
+    parser.add_argument("--logistic-penalty", type=_none_or_str, default=None, help="Type of penalty (l1, l2, etc.)")
+    parser.add_argument("--logistic-c", type=float, default=1.0, help="Inverse regularization strength")
+    parser.add_argument("--logistic-solver", type=str, default="lbfgs", help="Solver to use for optimization")
+    parser.add_argument("--logistic-tol", type=float, default=1e-4, help="Tolerance for stopping criteria")
+    parser.add_argument("--logistic-max-iter", type=int, default=200, help="Maximum number of iterations for optimization")
+    return parser.parse_args()
 
-print(f"Arguments: {args}")
 
-simclr_model = build_simclr_network(DEVICE, args)
+def setup_environment(args: argparse.Namespace) -> torch.device:
+    load_dotenv()
+    print_versions()
+    set_seed(args.seed)
+
+    device = configure_gpu_device(args.gpu_index)
+
+    # CUDA debug/perf toggles
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1" if args.no_cudnn else os.environ.get("CUDA_LAUNCH_BLOCKING","0")
+    torch.backends.cudnn.enabled = not args.no_cudnn
+    torch.backends.cudnn.benchmark = args.cudnn_benchmark and not args.no_cudnn
+    return device
 
 
-seeds = [GLOBAL_SEED]
-for seed in seeds:
-    print(f"\n=== Starting run with seed {seed} ===")
-    set_seed(seed)
-    if YAWARE:
-        loaders = information_extraction.get_data_loaders(MS_PATH, RGB_PATH, batch_size=BATCH_SIZE)
+def build_model(device: torch.device, args: argparse.Namespace) -> torch.nn.Module:
+    model = build_simclr_network(device, args)
+    if args.weights is not None:
+        if not os.path.exists(args.weights):
+            raise FileNotFoundError(f"Weights not found: {args.weights}")
+        state = torch.load(args.weights, map_location=device, weights_only=True)
+        model.load_state_dict(state)
     else:
-        loaders = simclr_datamodule.get_data_loaders(RGB_PATH, BATCH_SIZE)
-    train_loader, val_loader, test_loader, val_subset_no_transform, num_classes = loaders
+        print("No weights provided. The model is initialized with random weights.")
 
-    wd =  0.5 
-    optimizer, scheduler = make_optimizer_scheduler(
-        simclr_model.parameters(),
-        CONFIG["LR"],
-        CONFIG["WD"],
-        len(train_loader),
-        CONFIG["EPOCHS_SIMCLR"]
-        )
+    model.eval()
+    return model
+
+
+@torch.no_grad()
+def extract_features(
+    model: torch.nn.Module,
+    dataloader,
+    device: torch.device,
+    l2norm: bool = False,
+    desc: str = "Extracting features"
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    feats_list, labels_list = [], []
+    for sample in tqdm(dataloader, desc=desc, leave=True):
+        images, lbls = sample[0], sample[-1]
+        images = images.to(device, non_blocking=True)
+        feats, _ = model(images)
+        if l2norm:
+            feats = F.normalize(feats, dim=-1)
+        feats_list.append(feats.detach().to(device))
+        labels_list.append(lbls.detach().to(device))
+    return torch.cat(feats_list, dim=0), torch.cat(labels_list, dim=0)
     
-    bs = CONFIG["BATCH_SIZE"]
-    if YAWARE:
-        if CONFIG["ORIGINAL_Y_AWARE"]:
-            loss_fn = GeneralizedSupervisedNTXenLoss(
-                temperature=TEMPERATURE,
-                return_logits=True,
-                sigma=0.8
-            ).to(DEVICE)
-        else:
-            loss_fn = HaversineRBFNTXenLoss(temperature=0.9, sigma=0.003).to(DEVICE)
+
+def get_eval_loaders(args: argparse.Namespace):
+    loaders = get_pretrain_loaders(
+        args.data_ms,
+        args.data_rgb,
+        batch_size=args.batch_size,
+        task="simclr",
+        build_eval_loaders=True,
+        use_test_as_eval=args.use_test_as_eval,
+    )
+    _train_pre, _test_pre, train_eval, test_eval = loaders
+    # free pretraining loaders to save memory
+    del _train_pre, _test_pre
+    return train_eval, test_eval
+
+def evaluate_classification(
+    preds: Tensor, targets: Tensor, num_classes: int
+) -> dict[str, Tensor]:
+    """Evaluate predictions for classification.
+
+    Args:
+        preds (Tensor): Predictions from the model.
+        targets (Tensor): Ground truth labels.
+        num_classes (int): Number of classes for classification.
+
+    Returns:
+        dict[str, Tensor]: Dictionary containing evaluation metrics.
+    """
+    metric_kwargs = dict(task="multiclass", num_classes=num_classes)
+    metrics = MetricCollection(
+        {
+            "accuracy": Accuracy(top_k=1, **metric_kwargs),
+            "accuracy_top5": Accuracy(top_k=5, **metric_kwargs),
+            "precision_macro": Precision(average="macro", **metric_kwargs),
+            "precision_per_class": Precision(average=None, **metric_kwargs),
+            "recall_macro": Recall(average="macro", **metric_kwargs),
+            "recall_per_class": Recall(average=None, **metric_kwargs),
+            "f1_macro": F1Score(average="macro", **metric_kwargs),
+            "f1_per_class": F1Score(average=None, **metric_kwargs),
+            "confusion_matrix": ConfusionMatrix(**metric_kwargs),
+        }
+    )
+    return metrics(preds.cpu(), targets.cpu())
+
+
+def _to_serializable(val):
+    """Convert tensors or numpy arrays into Python scalars/lists for JSON."""
+    if isinstance(val, torch.Tensor):
+        if val.numel() == 1:
+            return val.item()
+        return val.tolist()
+    if isinstance(val, (list, tuple)):
+        return [_to_serializable(v) for v in val]
+    if isinstance(val, dict):
+        return {k: _to_serializable(v) for k, v in val.items()}
+    return val
+
+def save_metrics(metrics: dict, weights_path: str | Path, name: str):
+    """Save metrics dictionary to a JSON file in the same directory as weights."""
+    serializable = _to_serializable(metrics)
+    weights_path = Path(weights_path)
+    # if it ends in .pth, use the parent directory, else it is the dir itself
+    if weights_path.suffix == ".pth":
+        outdir = weights_path.parent
     else:
-        loss_fn = NTXentLoss(
-            batch_size=bs,
-            temperature=TEMPERATURE,
-        ).to(DEVICE)
+        outdir = weights_path
 
-    print("Starting SimCLR training...")
-    epochs_simclr = CONFIG["EPOCHS_SIMCLR"]
-    lr = CONFIG["LR"]
-    wandb_run = wandb.init(
-        project="eurosat-contrastive-scratch",
-        name=f"BS{bs}_LR{lr:.0e}_SEED{seed}_TEMPERATURE{TEMPERATURE}_EPOCHS{epochs_simclr}",
-        tags=["SimCLR", "EuroSAT", "Contrastive Learning"],
-        config=CONFIG
-    )
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    outfile = outdir / f"{name}_metrics_{timestamp}.json"
+    with open(outfile, "w") as f:
+        json.dump(serializable, f, indent=4)
+    print(f"Metrics saved to {outfile}")
+    return outfile
 
-    wandb.log({"model_summary": str(simclr_model)})
+def main():
+    args = parse_args()
+    device = setup_environment(args)
+    print(f"Device: {device}")
+    print(f"Using weights: {args.weights}")
 
-    eval_transform, augment_transform = get_transforms(
-        mean = CONFIG["MEAN"],
-        std = CONFIG["STD"]
-    )  # these must match the transforms used in test_loader
+    train_loader_eval, test_loader_eval = get_eval_loaders(args)
 
+    model = build_model(device, args)
 
-    probe_train_loader, probe_val_loader = get_probe_loaders(
-        train_loader,
-        val_loader,
-        eval_transform,               # must match transforms used in test_loader
-        probe_batch_size=CONFIG["BATCH_SIZE"],
-        yaware=YAWARE
-    )
+    X_train, y_train = extract_features(model, train_loader_eval, device, l2norm=args.l2norm, desc="Train features")
+    X_test,  y_test  = extract_features(model, test_loader_eval,  device, l2norm=args.l2norm, desc="Test features")
 
-    start = time.time()
-    print(f"Starting SimCLR training at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
-    filename_pretrained_weights = train_simclr_v2_function(
-        simclr_model,
-        optimizer, 
-        loss_fn, 
-        DEVICE,
-        simclr_epochs=CONFIG["EPOCHS_SIMCLR"],
-        feature_dim=CONFIG["FEATURE_DIM"],
-        num_classes=num_classes,
-        wandb_run=wandb_run,
-        scheduler=scheduler,
-        seed=seed,
-        yaware=YAWARE 
-    )
-    end = time.time()
-    print(f"SimCLR training completed in {end - start:.2f} seconds.")
-    wandb_run.log({
-        "training_time_seconds": end - start,
-    })
+    del model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
-    wandb_run.finish()
+    # KNN evaluation
+    k = args.k
+    num_classes=args.n_classes
+    knn = NNClassifier(num_classes=num_classes, k=k)
+    knn.fit(X_train, y_train)
+    proba_knn = knn.predict_proba(X_test).cpu()
+    metrics_knn = evaluate_classification(proba_knn, y_test, num_classes)
+    print(f"KNN Classifier Metrics (k={k}):")
+    print(metrics_knn)
+    save_dir = args.output_dir if args.weights is None else args.weights
+    outfile_knn = save_metrics(metrics_knn, save_dir, "knn")
 
-print("All runs completed.")
-wandb.finish()
+    # Logistic probe evaluation
+    classifier_log = SklearnLogisticClassifier(
+            random_state=args.seed,
+            penalty=args.logistic_penalty,
+            C=args.logistic_c,
+            solver=args.logistic_solver,
+            tol=args.logistic_tol,
+            max_iter=args.logistic_max_iter,
+            verbose=1,
+        )
 
+    classifier_log.fit(X_train, y_train)
 
-# get the saved model and run linear probe
-seed = CONFIG["SEED"]
-bs = CONFIG["BATCH_SIZE"]
-epochs_simclr = CONFIG["EPOCHS_SIMCLR"]
-simclr_lr = CONFIG["LR"]
-lr_str = f"{simclr_lr:.0e}" if simclr_lr < 0.0001 else f"{simclr_lr:.6f}"
-print(f"Using model path: {filename_pretrained_weights}")
+    proba_log = classifier_log.predict_proba(X_test).cpu()
+    metrics_log = evaluate_classification(proba_log, y_test, num_classes)
+    print("Logistic Regression Classifier Metrics:")
+    print(metrics_log)
+    outfile_log_prob = save_metrics(metrics_log, save_dir, "logistic")
+    
+    class_names = train_loader_eval.dataset.classes
+    plotter.main(outfile_knn, "knn", class_names)
+    plotter.main(outfile_log_prob, "logistic", class_names)
 
-if not os.path.exists(filename_pretrained_weights):
-    print(f"Model {filename_pretrained_weights} does not exist. Please run the SimCLR pretraining first.")
-
-state_dict = torch.load(filename_pretrained_weights, map_location=torch.device(DEVICE), weights_only=True)
-simclr_model.load_state_dict(state_dict)
-
-# Perform linear probe on train+val as train set, and test as test set
-train_loader, test_loader, num_classes = get_data_loaders_train_test_linear_probe(CONFIG["DATA_DIR_EUROSAT_RGB"], CONFIG["BATCH_SIZE"])
-_, _, train_loader_eval, test_loader_eval = get_pretrain_loaders(
-    CONFIG["DATA_DIR_EUROSAT_MS"],
-    CONFIG["DATA_DIR_EUROSAT_RGB"],
-    batch_size=CONFIG["BATCH_SIZE"],
-    task="simclr",
-    build_eval_loaders=True,
-    use_test_as_eval=True,
-)
-
-run_logistic_probe_experiment(
-    CONFIG["SEED"],
-    train_loader,
-    test_loader,
-    num_classes,
-    simclr_model,
-    bs,
-    save_dir=os.path.dirname(filename_pretrained_weights)
-)
+    
+if __name__ == "__main__":
+    main()
