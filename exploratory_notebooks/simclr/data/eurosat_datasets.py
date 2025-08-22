@@ -328,7 +328,7 @@ def get_pretrain_loaders(
     # 4) datasets
     if task == "yaware":
         train_aug_ds = EuroSATBase(rgb_path, df.iloc[train_idx], return_meta=True,  transform=two_crops_with_meta(two_train))
-        eval_aug_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=True,  transform=two_crops_with_meta(two_eval))
+        eval_aug_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=True,  transform=two_crops_with_meta(two_train))
         if build_eval_loaders:
             train_eval_ds = EuroSATBase(rgb_path, df.iloc[train_idx], return_meta=False, transform=two_crops_no_meta(two_eval))
             eval_eval_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=False, transform=two_crops_no_meta(two_eval))
@@ -336,7 +336,7 @@ def get_pretrain_loaders(
             train_eval_ds = None; eval_eval_ds = None
     elif task == "simclr":
         train_aug_ds = EuroSATBase(rgb_path, df.iloc[train_idx], return_meta=False, transform=two_crops_no_meta(two_train))
-        eval_aug_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=False, transform=two_crops_no_meta(two_eval))
+        eval_aug_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=False, transform=two_crops_no_meta(two_train))
         if build_eval_loaders:
             train_eval_ds = EuroSATBase(rgb_path, df.iloc[train_idx], return_meta=False, transform=two_crops_no_meta(two_eval))
             eval_eval_ds  = EuroSATBase(rgb_path, df.iloc[eval_idx],  return_meta=False, transform=two_crops_no_meta(two_eval))
