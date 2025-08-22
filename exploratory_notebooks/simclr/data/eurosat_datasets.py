@@ -253,6 +253,9 @@ class EuroSATBase(Dataset):
         self.metas       = metadata_df[["latitude","longitude"]].to_numpy(dtype="float32", copy=True)
         self.return_meta = bool(return_meta)
         self._transform  = transform  # callable: tuple -> tuple
+        self.class_to_idx = metadata_df[['class', 'label_id']].drop_duplicates().set_index('class').to_dict()['label_id']
+        sorted_items = sorted(self.class_to_idx.items(), key=lambda item: item[1])
+        self.classes = [item[0] for item in sorted_items]
 
     def __len__(self) -> int:
         return len(self.paths)

@@ -24,7 +24,7 @@ from torchmetrics import (
     Precision,
     Recall,
 )
-
+import utils.plot_metrics as plotter
 try:
     from utils.version_utils import print_versions, configure_gpu_device, set_seed
 except Exception:
@@ -55,8 +55,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-classes",  type=int, default=10)
     parser.add_argument("--feature-dim",type=int, default=512)
     parser.add_argument("--proj-dim",   type=int, default=CONFIG.get("PROJ_DIM", 128))
-    parser.add_argument("--weights",    type=str, required=True,
-                        help="Path to pretrained SimCLR weights (.pth)")
+    parser.add_argument("--weights", type=str,  default=None, required=False,
+                        help="Optional path to pretrained weights (.pth). If not provided, the model starts with random weights.")
+    parser.add_argument("--output-dir", type=str, default="output", help="Directory to save output files", required=False)
     parser.add_argument("--batch-size", type=int, default=CONFIG.get("BATCH_SIZE", 256))
     parser.add_argument("--k",          type=int, default=5, help="k for KNN")
     parser.add_argument("--l2norm",     action="store_true", help="L2-normalize features")
@@ -91,11 +92,15 @@ def setup_environment(args: argparse.Namespace) -> torch.device:
 
 
 def build_model(device: torch.device, args: argparse.Namespace) -> torch.nn.Module:
-    model = build_simclr_network(device, args)  # your project’s builder
-    if not os.path.exists(args.weights):
-        raise FileNotFoundError(f"Weights not found: {args.weights}")
-    state = torch.load(args.weights, map_location=device, weights_only=True)
-    model.load_state_dict(state)
+    model = build_simclr_network(device, args)
+    if args.weights is not None:
+        if not os.path.exists(args.weights):
+            raise FileNotFoundError(f"Weights not found: {args.weights}")
+        state = torch.load(args.weights, map_location=device, weights_only=True)
+        model.load_state_dict(state)
+    else:
+        print("No weights provided. The model is initialized with random weights.")
+
     model.eval()
     return model
 
@@ -180,13 +185,18 @@ def save_metrics(metrics: dict, weights_path: str | Path, name: str):
     """Save metrics dictionary to a JSON file in the same directory as weights."""
     serializable = _to_serializable(metrics)
     weights_path = Path(weights_path)
-    outdir = weights_path.parent
+    # if it ends in .pth, use the parent directory, else it is the dir itself
+    if weights_path.suffix == ".pth":
+        outdir = weights_path.parent
+    else:
+        outdir = weights_path
+
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     outfile = outdir / f"{name}_metrics_{timestamp}.json"
     with open(outfile, "w") as f:
         json.dump(serializable, f, indent=4)
     print(f"Metrics saved to {outfile}")
-
+    return outfile
 
 def main():
     args = parse_args()
@@ -214,7 +224,8 @@ def main():
     metrics_knn = evaluate_classification(proba_knn, y_test, num_classes)
     print(f"KNN Classifier Metrics (k={k}):")
     print(metrics_knn)
-    save_metrics(metrics_knn, args.weights, "knn")
+    save_dir = args.output_dir if args.weights is None else args.weights
+    outfile_knn = save_metrics(metrics_knn, save_dir, "knn")
 
     # Logistic probe evaluation
     classifier_log = SklearnLogisticClassifier(
@@ -233,7 +244,12 @@ def main():
     metrics_log = evaluate_classification(proba_log, y_test, num_classes)
     print("Logistic Regression Classifier Metrics:")
     print(metrics_log)
-    save_metrics(metrics_log, args.weights, "logistic")
+    outfile_log_prob = save_metrics(metrics_log, save_dir, "logistic")
+    
+    class_names = train_loader_eval.dataset.classes
+    plotter.main(outfile_knn, "knn", class_names)
+    plotter.main(outfile_log_prob, "logistic", class_names)
 
+    
 if __name__ == "__main__":
     main()
