@@ -15,7 +15,7 @@ from simclr.models.loss import compute_contrastive_accuracy
 from transfer.new_knn import NNClassifier
 from transfer.new_logistic import SklearnLogisticClassifier
 import torch.nn.functional as F
-
+from typing import Optional
 
 from notebooks.main_evaluation import extract_features, evaluate_classification
 
@@ -137,13 +137,14 @@ class AMPManager:
         return torch.amp.autocast(device_type=self.device_type, dtype=self.dtype, enabled=self.enabled)
 
 
+
 @dataclass
 class EvalResults:
-    contrastive_acc_train: float = 0.0
-    contrastive_acc_val: float = 0.0
-    logistic_acc_train: float = 0.0
-    logistic_acc_val: float = 0.0
-    knn_acc_val: float = 0.0
+    contrastive_acc_train: Optional[float] = None
+    contrastive_acc_val:   Optional[float] = None
+    logistic_acc_train:    Optional[float] = None
+    logistic_acc_val:      Optional[float] = None
+    knn_acc_val:           Optional[float] = None
 
 
 class Checkpointer:
@@ -397,16 +398,16 @@ def train_simclr_v2_function(
 
         # Logging (stdout)
         if perform_eval and (epoch % max(1, min(INTERVAL_CONTRASTIVE_ACC, INTERVAL_EPOCHS_LINEAR_PROBE, INTERVAL_EPOCHS_KNN)) == 0):
-            msg = (
-                f"Epoch {epoch:02d}/{simclr_epochs} | "
+            def _fmt(x): return f"{x:.3f}" if x is not None else "—"
+            print("\n" +
+                   f"Epoch {epoch:02d}/{simclr_epochs} | "
                 f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f} | "
-                f"Logistic Probe Acc (Val): {eval_res.logistic_acc_val:.3f}, "
-                f"Logistic Probe Acc (Train): {eval_res.logistic_acc_train:.3f} | "
-                f"Contrastive Acc (Train): {eval_res.contrastive_acc_train:.3f}, "
-                f"Contrastive Acc (Val): {eval_res.contrastive_acc_val:.3f} | "
-                f"KNN Acc (Val): {eval_res.knn_acc_val:.3f}"
+                f"Logistic (Val/Train): {_fmt(eval_res.logistic_acc_val)}/"
+                f"{_fmt(eval_res.logistic_acc_train)} | "
+                f"Contrastive (Val/Train): {_fmt(eval_res.contrastive_acc_val)}/"
+                f"{_fmt(eval_res.contrastive_acc_train)} | "
+                f"KNN (Val): {_fmt(eval_res.knn_acc_val)}"
             )
-            print("\n" + msg)
 
         if wandb_run is not None:
             t0 = time.perf_counter()
@@ -416,13 +417,16 @@ def train_simclr_v2_function(
                 "simclr_val_loss": val_loss,
             }
             if perform_eval:
-                log_payload.update({
-                    "logistic_probe_acc": eval_res.logistic_acc_val,
-                    "logistic_probe_train_acc": eval_res.logistic_acc_train,
-                    "contrastive_val_acc": eval_res.contrastive_acc_val,
-                    "contrastive_train_acc": eval_res.contrastive_acc_train,
-                    "knn_val_acc": eval_res.knn_acc_val,
-                })
+                if eval_res.logistic_acc_val is not None:
+                    log_payload["logistic_probe_acc"] = float(eval_res.logistic_acc_val)
+                if eval_res.logistic_acc_train is not None:
+                    log_payload["logistic_probe_train_acc"] = float(eval_res.logistic_acc_train)
+                if eval_res.contrastive_acc_val is not None:
+                    log_payload["contrastive_val_acc"] = float(eval_res.contrastive_acc_val)
+                if eval_res.contrastive_acc_train is not None:
+                    log_payload["contrastive_train_acc"] = float(eval_res.contrastive_acc_train)
+                if eval_res.knn_acc_val is not None:
+                    log_payload["knn_val_acc"] = float(eval_res.knn_acc_val)
             wandb_run.log(log_payload)
             timings.add('logging', time.perf_counter() - t0)
 
