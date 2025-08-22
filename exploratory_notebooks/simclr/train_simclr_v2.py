@@ -17,7 +17,7 @@ from transfer.new_logistic import SklearnLogisticClassifier
 import torch.nn.functional as F
 
 
-from notebooks.main_evaluate import extract_features, evaluate_classification
+from notebooks.main_evaluation import extract_features, evaluate_classification
 
 
 INTERVAL_EPOCHS_LINEAR_PROBE = CONFIG["INTERVAL_EPOCHS_LINEAR_PROBE"]
