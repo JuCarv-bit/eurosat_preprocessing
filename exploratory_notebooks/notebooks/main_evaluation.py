@@ -27,6 +27,11 @@ from torchmetrics import (
     Recall,
 )
 import utils.plot_metrics as plotter
+import umap
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
 try:
     from utils.version_utils import print_versions, configure_gpu_device, set_seed
 except Exception:
@@ -43,6 +48,91 @@ from simclr.models.simclr import build_simclr_network
 from simclr.data.eurosat_datasets import get_pretrain_loaders
 
 
+def plot_umap_embeddings(
+    X_train: Tensor,
+    y_train: Tensor,
+    X_test: Tensor,
+    y_test: Tensor,
+    class_names,
+    save_path: str | Path,
+    n_neighbors: int = 15,
+    min_dist: float = 0.1,
+    metric: str = "euclidean",
+    random_state: int = 42,
+    max_points_per_split: int | None = 50000,
+):
+    """
+    Fit UMAP on train features, transform both splits, and save PNGs in the same directory
+    logic as metrics (next to weights if --weights is a .pth, else in --output-dir).
+    Returns dict with file paths, or None if UMAP isn't available.
+    """
+
+    # Tensors -> numpy
+    Xtr = X_train.detach().cpu().numpy()
+    ytr = y_train.detach().cpu().numpy().astype(int)
+    Xte = X_test.detach().cpu().numpy()
+    yte = y_test.detach().cpu().numpy().astype(int)
+
+    # subsampling for speed/clarity
+    def _subsample(X, y, max_pts, seed):
+        if max_pts is None or len(y) <= max_pts:
+            return X, y
+        rng = np.random.RandomState(seed)
+        idx = rng.choice(len(y), size=max_pts, replace=False)
+        return X[idx], y[idx]
+
+    Xtr_s, ytr_s = _subsample(Xtr, ytr, max_points_per_split, random_state)
+    Xte_s, yte_s = _subsample(Xte, yte, max_points_per_split, random_state)
+
+    # UMAP: fit on train, transform test
+    reducer = umap.UMAP(
+        n_neighbors=n_neighbors,
+        min_dist=min_dist,
+        metric=metric,
+        random_state=random_state,
+    )
+    Ztr = reducer.fit_transform(Xtr_s)
+    Zte = reducer.transform(Xte_s)
+
+    # Output dir: same logic as save_metrics
+    outdir = Path(save_path)
+    if outdir.suffix == ".pth":
+        outdir = outdir.parent
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    def _plot_split(Z, y, split_name: str):
+        n_classes = len(class_names)
+        _ = matplotlib.cm.get_cmap("tab20", n_classes) if n_classes > 10 else matplotlib.cm.get_cmap("tab10", n_classes)
+
+        fig, ax = plt.subplots(figsize=(10, 8), dpi=150)
+        for c in range(n_classes):
+            mask = (y == c)
+            if not mask.any():
+                continue
+            ax.scatter(
+                Z[mask, 0], Z[mask, 1],
+                s=8, alpha=0.7,
+                label=class_names[c] if c < len(class_names) else str(c),
+            )
+
+        ax.set_title(f"UMAP – {split_name}")
+        ax.set_xlabel("UMAP-1")
+        ax.set_ylabel("UMAP-2")
+        ax.grid(True, linewidth=0.3, alpha=0.3)
+        ax.legend(loc="best", markerscale=2, frameon=True, fontsize=8, ncol=1)
+        fig.tight_layout()
+
+        outfile = outdir / f"umap_{split_name.lower()}_{ts}.png"
+        fig.savefig(outfile, bbox_inches="tight")
+        plt.close(fig)
+        print(f"[UMAP] Saved {split_name} plot -> {outfile}")
+        return outfile
+
+    f_train = _plot_split(Ztr, ytr_s, "Train")
+    f_test  = _plot_split(Zte, yte_s, "Test")
+    return {"train": str(f_train), "test": str(f_test)}
 
 
 def _none_or_str(value: str) -> str | None:
@@ -251,6 +341,21 @@ def main():
     class_names = train_loader_eval.dataset.classes
     plotter.main(outfile_knn, "knn", class_names)
     plotter.main(outfile_log_prob, "logistic", class_names)
+
+    try:
+        _ = plot_umap_embeddings(
+            X_train, y_train,
+            X_test,  y_test,
+            class_names=class_names,
+            save_path=save_dir,          # same directory logic as metrics
+            n_neighbors=15,
+            min_dist=0.1,
+            metric="euclidean",
+            random_state=args.seed,
+        )
+    except Exception as e:
+        print(f"[UMAP] plotting failed: {e}")
+
 
     
 if __name__ == "__main__":
