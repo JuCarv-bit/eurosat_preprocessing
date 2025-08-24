@@ -18,7 +18,28 @@ from notebooks.main_evaluation import save_metrics
 import utils.plot_metrics as plotter
 
 from notebooks.main_pretrain import setup_env_and_device
+from notebooks.main_evaluation import plot_umap_embeddings, extract_features
 
+@torch.no_grad()
+def collect_logits_and_targets(model, loader, device):
+    logits_list, targets_list = [], []
+    for batch in loader:
+        if isinstance(batch, (list, tuple)):
+            if len(batch) == 2:
+                x, y = batch
+            elif len(batch) >= 3:
+                x, y = batch[0], batch[-1]
+            else:
+                raise ValueError(f"Unexpected eval batch length: {len(batch)}")
+        else:
+            raise ValueError(f"Unexpected eval batch type: {type(batch)}")
+        x = x.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True)
+        logits = model(x)
+        logits_list.append(logits)
+        targets_list.append(y)
+
+    return logits_list, targets_list
 
 @torch.no_grad()
 def evaluate_full_metrics(model: nn.Module, loader: DataLoader, device: torch.device, num_classes: int):
@@ -37,26 +58,12 @@ def evaluate_full_metrics(model: nn.Module, loader: DataLoader, device: torch.de
             "confusion_matrix": ConfusionMatrix(**metric_kwargs),
         }
     ).to(device)
-    logits_list, targets_list = [], []
-    for batch in loader:
-        if isinstance(batch, (list, tuple)):
-            if len(batch) == 2:
-                x, y = batch
-            elif len(batch) >= 3:
-                x, y = batch[0], batch[-1]
-            else:
-                raise ValueError(f"Unexpected eval batch length: {len(batch)}")
-        else:
-            raise ValueError(f"Unexpected eval batch type: {type(batch)}")
-        x = x.to(device, non_blocking=True)
-        y = y.to(device, non_blocking=True)
-        logits = model(x)
-        logits_list.append(logits)
-        targets_list.append(y)
+    logits_list, targets_list = collect_logits_and_targets(model, loader, device)
     preds = torch.cat(logits_list, dim=0).softmax(dim=1)
     targets = torch.cat(targets_list, dim=0)
     out = metrics(preds, targets)
     return {k: (v.detach().cpu() if isinstance(v, torch.Tensor) else v) for k, v in out.items()}
+    return logits_list,targets_list,x,y
 
 
 def evaluate_from_weights(
@@ -85,13 +92,14 @@ def evaluate_from_weights(
     else:
         raise FileNotFoundError(f"weights_uri not found and not a valid URL: {weights_uri}")
 
-    _, _, _, eval_eval_loader = get_pretrain_loaders(
+
+    train_loader_pretrain, test_loader_pretrain, train_loader_eval, test_eval_loader = get_pretrain_loaders(
         CONFIG["DATA_DIR_EUROSAT_MS"],
         CONFIG["DATA_DIR_EUROSAT_RGB"],
         batch_size=batch_size,
         task="yaware" if yaware else "simclr",
         build_eval_loaders=True,
-        use_test_as_eval=False,
+        use_test_as_eval=True,
         splits_dir=CONFIG["SPLITS_DIR"],
         meta_dir=CONFIG["SPLITS_META_DIR"],
         use_cache=True,
@@ -122,9 +130,31 @@ def evaluate_from_weights(
             f"Unexpected keys (in checkpoint): {len(extra)} e.g. {extra[:5]}"
         )
 
-    metrics = evaluate_full_metrics(model, eval_eval_loader, device, num_classes=num_classes)
+    metrics = evaluate_full_metrics(model, test_eval_loader, device, num_classes=num_classes)
     # save  metrics  on the same directory as the weights
-    class_names = eval_eval_loader.dataset.classes
+    class_names = test_eval_loader.dataset.classes
+
+    x_train, y_train = collect_logits_and_targets(model, train_loader_eval, device)
+    x_test,  y_test  = collect_logits_and_targets(model, test_eval_loader, device)
+
+    # convert to tensor
+    x_train = torch.cat(x_train).detach().cpu()
+    y_train = torch.cat(y_train).detach().cpu()
+    x_test = torch.cat(x_test).detach().cpu()
+    y_test = torch.cat(y_test).detach().cpu()
+
+    umap_save_dir = os.path.dirname(weights_path)
+    plot_umap_embeddings(
+        x_train, y_train,
+        x_test,  y_test,
+        class_names=class_names,
+        save_path=umap_save_dir,          # same directory logic as metrics
+        n_neighbors=15,
+        min_dist=0.1,
+        metric="euclidean",
+        random_state=args.seed,
+    )
+
     return {
         "device": str(device),
         "weights_path": weights_path,
@@ -145,6 +175,7 @@ def parse_args():
     ap.add_argument("--dataset", type=str, default="eurosat")
     ap.add_argument("--cudnn_deterministic", action="store_true", default=False)
     ap.add_argument("--disable_cudnn", action="store_true", default=False)
+    ap.add_argument("--l2norm",     action="store_true", help="L2-normalize features")
     ap.add_argument("--weights-path", type=str, default="/share/homes/carvalhj/projects/eurosat_preprocessing/models_supervised/2025-08-22_18-22-57/model_epoch_200.pth")
     return ap.parse_args()
 
@@ -162,6 +193,9 @@ def main():
     plotter.main(outfile, "supervised", class_names)
 
     print(out["metrics"])
+
+    # plot the UMAP
+    
 
 if __name__ == "__main__":
     main()
