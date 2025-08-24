@@ -11,7 +11,7 @@ import numpy as np
 # Taken from https://github.com/Duplums/yAwareContrastiveLearning/
 
 class GeneralizedSupervisedNTXenLoss(nn.Module):
-    def __init__(self, kernel='rbf', temperature=0.1, return_logits=False, sigma=1.0):
+    def __init__(self, kernel='rbf', temperature=0.1, return_logits=False, sigma=1.0, label_index=0):
         """
         :param kernel: a callable function f: [K, *] x [K, *] -> [K, K]
                                               y1, y2          -> f(y1, y2)
@@ -33,10 +33,13 @@ class GeneralizedSupervisedNTXenLoss(nn.Module):
         self.temperature = temperature
         self.return_logits = return_logits
         self.INF = 1e8
+        assert label_index in [0, 1], "Invalid label index: %i"%label_index
+        self.label_index = label_index # 0: lat, 1: long
 
     def forward(self, z_i, z_j, labels):
         N = len(z_i)
         assert N == len(labels), "Unexpected labels length: %i"%len(labels)
+
         z_i = func.normalize(z_i, p=2, dim=-1) # dim [N, D]
         z_j = func.normalize(z_j, p=2, dim=-1) # dim [N, D]
         sim_zii= (z_i @ z_i.T) / self.temperature # dim [N, N] => Upper triangle contains incorrect pairs
@@ -45,6 +48,10 @@ class GeneralizedSupervisedNTXenLoss(nn.Module):
         # 'Remove' the diag terms by penalizing it (exp(-inf) = 0)
         sim_zii = sim_zii - self.INF * torch.eye(N, device=z_i.device)
         sim_zjj = sim_zjj - self.INF * torch.eye(N, device=z_i.device)
+
+        # get only the relevant label (lat or long, according to label index)
+        with torch.no_grad():
+            labels = labels[:,  self.label_index]
 
         all_labels = labels.view(N, -1).repeat(2, 1).detach().cpu().numpy() # [2N, *]
         weights = self.kernel(all_labels, all_labels) # [2N, 2N]

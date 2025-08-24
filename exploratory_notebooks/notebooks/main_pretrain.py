@@ -56,6 +56,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--epoch_save_interval", type=int, default=CONFIG.get("EPOCH_SAVE_INTERVAL", 20))
     p.add_argument("--dataset", type=str, default="eurosat")
     p.add_argument("--perform_eval", action="store_true", default=CONFIG.get("PERFORM_EVAL", True))
+    p.add_argument("--index_yaware", type=int, default=CONFIG.get("INDEX_YAWARE", 0))
     return p
 
 
@@ -110,9 +111,10 @@ def make_loss(args, device):
     if args.yaware:
         if args.original_yaware:
             loss_fn = GeneralizedSupervisedNTXenLoss(
-                temperature=args.temperature,
+                temperature=args.temperature if args.temperature is not None else 0.9,
                 return_logits=True,
-                sigma=0.8,
+                sigma=0.003,
+                label_index=args.index_yaware,
             ).to(device)
         else:
             loss_fn = HaversineRBFNTXenLoss(
@@ -122,7 +124,7 @@ def make_loss(args, device):
     else:
         loss_fn = NTXentLoss(
             batch_size=args.batch_size,
-            temperature=args.temperature,
+            temperature=args.temperature if args.temperature is not None else 0.9,
         ).to(device)
     return loss_fn
 
@@ -152,7 +154,8 @@ def train_once(args) -> str:
     loss_fn = make_loss(args, device)
 
     start = time.time()
-    print(f"Starting {task} training at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+    mytime = {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}
+    print(f"Starting {task} training at {mytime}")
     num_classes = 10 if args.data_rgb else 1000
     ckpt_path = train_simclr_v2_function(
         simclr_model,
