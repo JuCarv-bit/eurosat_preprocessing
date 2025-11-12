@@ -1,1 +1,1 @@
-python /share/homes/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/notebooks/main_pretrain.py
+python exploratory_notebooks/notebooks/main_pretrain.py

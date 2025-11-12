@@ -7,7 +7,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from PIL import Image
-from typing import Dict, Any
+from typing import Tuple, Dict, Any
 import rasterio
 from rasterio.transform import xy
 from pyproj import Transformer
@@ -19,13 +19,9 @@ from simclr.data.datamodule import compute_mean_std, get_transforms, TwoCropsTra
 from simclr.config import CONFIG
 
 
-import os
-from typing import Tuple, Any
-import torch
-from torch.utils.data import Dataset
-from PIL import Image
 
-CACHE_FILE = "/share/homes/carvalhj/projects/eurosat_preprocessing/exploratory_notebooks/yaware/eurosat_metadata_cache.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_FILE = os.path.join(BASE_DIR, "../../yaware/eurosat_metadata_cache.pkl")
 
 @lru_cache(maxsize=1)
 def extract_metadata(ms_path, rgb_path, use_cache=True):

@@ -11,7 +11,7 @@ pip cache purge
 # Delete  the project from  setup (old)
 python -m pip uninstall eurosat_project 
 
-python - <<<'import yaware_eurosat; print(yaware_eurosat.__file__)'
+python - <<<'import yaware_project; print(yaware_project.__file__)'
 rm -rf #path printed above
 
 cd exploratory_notebooks

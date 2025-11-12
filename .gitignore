@@ -22,3 +22,5 @@ wandb/*
 exploratory_notebooks/notebooks/wandb/*
 exploratory_notebooks/notebooks/models/*
 models/*
+splits/*
+splits_meta/*
